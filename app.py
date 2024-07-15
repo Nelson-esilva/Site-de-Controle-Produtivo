@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from sqlalchemy import text
 import os
 
 app = Flask(__name__)
@@ -68,9 +69,15 @@ def init_db():
         db.create_all()  # Create tables if they don't exist
         with open('setup.sql', 'r') as f:
             sql_commands = f.read().split(';')
+            connection = db.engine.connect()
             for command in sql_commands:
                 if command.strip():
-                    db.engine.execute(command.strip())
+                    try:
+                        connection.execute(text(command.strip()))
+                    except Exception as e:
+                        print(f"Error executing command: {command.strip()}")
+                        print(e)
+            connection.close()
 
 if __name__ == '__main__':
     if not os.path.exists('users.db'):
