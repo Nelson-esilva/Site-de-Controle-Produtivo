@@ -1,0 +1,25 @@
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT,
+    user VARCHAR(100),
+    senha VARCHAR(20),
+    matricula VARCHAR(30), 
+    primary key(id)	   
+);
+
+CREATE TABLE dados_programa (
+    id INT AUTO_INCREMENT,
+    nproduto VARCHAR(100),
+    peso VARCHAR(20),
+    datai DATE,
+    horai TIME,
+    dataf DATE,
+    horaf TIME,
+    marcha BOOLEAN,
+    defprod VARCHAR(100),
+    motivo  VARCHAR(100),
+    acaocorre VARCHAR(100),
+    respons VARCHAR(100),
+    obs VARCHAR(200),
+    primary key(id)
+);
+
