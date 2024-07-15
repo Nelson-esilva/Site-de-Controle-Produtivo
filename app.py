@@ -31,6 +31,28 @@ class DadosPrograma(db.Model):
     respons = db.Column(db.String(100))
     obs = db.Column(db.String(200))
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        matricula = request.form['matricula']
+        
+        # Verificar se o usuário já existe
+        if Usuario.query.filter_by(user=username).first():
+            flash('Usuário já existe. Escolha outro.')
+            return redirect(url_for('register'))
+        
+        # Criar novo usuário
+        new_user = Usuario(user=username, senha=password, matricula=matricula)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        flash('Usuário criado com sucesso! Você pode fazer login agora.')
+        return redirect(url_for('login'))
+    
+    return render_template('register.html')
+
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
