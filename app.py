@@ -1,6 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from datetime import datetime, time
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seu_banco_de_dados.db'
@@ -89,38 +91,53 @@ def relatorios():
 @app.route('/analise-dos-dados', methods=['GET', 'POST'])
 @login_required
 def analise_dos_dados():
+    return render_template('analise_dos_dados.html')
+
+@app.route('/consultar_dados', methods=['GET'])
+def consultar_dados():
+    dados = DadosPrograma.query.all()  # Ou outra lógica para obter dados
+    return render_template('consultar_dados.html', dados=dados)
+
+@app.route('/incluir_dados', methods=['GET', 'POST'])
+@login_required
+def incluir_dados():
     if request.method == 'POST':
-        # Handle data inclusion
         nproduto = request.form['nproduto']
         peso = request.form['peso']
-        datai = request.form['datai']
-        horai = request.form['horai']
-        dataf = request.form['dataf']
-        horaf = request.form['horaf']
-        marcha = 'marcha' in request.form
+        datai = datetime.strptime(request.form['datai'], '%Y-%m-%d').date()
+        horai = datetime.strptime(request.form['horai'], '%H:%M').time()  # Converte para time
+        dataf = datetime.strptime(request.form['dataf'], '%Y-%m-%d').date()
+        horaf = datetime.strptime(request.form['horaf'], '%H:%M').time()  # Converte para time
+        marcha = request.form.get('marcha') == 'True'  # Converte checkbox
         defprod = request.form['defprod']
         motivo = request.form['motivo']
         acaocorre = request.form['acaocorre']
         respons = request.form['respons']
         obs = request.form['obs']
 
-        new_data = DadosPrograma(
-            nproduto=nproduto, peso=peso, datai=datai, horai=horai, dataf=dataf,
-            horaf=horaf, marcha=marcha, defprod=defprod, motivo=motivo, 
-            acaocorre=acaocorre, respons=respons, obs=obs
+        # Criação do novo registro
+        novo_dado = DadosPrograma(
+            nproduto=nproduto,
+            peso=peso,
+            datai=datai,
+            horai=horai,
+            dataf=dataf,
+            horaf=horaf,
+            marcha=marcha,
+            defprod=defprod,
+            motivo=motivo,
+            acaocorre=acaocorre,
+            respons=respons,
+            obs=obs
         )
-        db.session.add(new_data)
+
+        # Adiciona e comita a nova entrada
+        db.session.add(novo_dado)
         db.session.commit()
         flash('Dados incluídos com sucesso!')
         return redirect(url_for('analise_dos_dados'))
-
-    dados_programa = DadosPrograma.query.all()
-    return render_template('analise_dos_dados.html', dados_programa=dados_programa)
-
-@app.route('/consultar_dados', methods=['GET'])
-def consultar_dados():
-    dados = DadosPrograma.query.all()  # Supondo que 'DadosPrograma' seja o modelo correto
-    return render_template('consultar_dados.html', dados=dados)
+    
+    return render_template('incluir_dados.html')
 
 @app.route('/ocorrencias')
 @login_required

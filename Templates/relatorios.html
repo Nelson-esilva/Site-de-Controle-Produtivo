@@ -1,15 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Relatórios</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <h1>Relatórios</h1>
-    <a href="{{ url_for('home') }}">Home</a>
-    <p>Aqui você pode visualizar e gerar relatórios.</p>
-    <!-- Implementar geração de relatórios aqui -->
+    <canvas id="meuGrafico" width="400" height="200"></canvas>
+    
+    <nav>
+        <a href="{{ url_for('home') }}">Voltar para Home</a>
+    </nav>
+
+    <script>
+        const ctx = document.getElementById('meuGrafico').getContext('2d');
+        const meuGrafico = new Chart(ctx, {
+            type: 'bar', // Tipo de gráfico (bar, line, pie, etc.)
+            data: {
+                labels: ['Produto 1', 'Produto 2', 'Produto 3'], // Substitua pelos seus rótulos
+                datasets: [{
+                    label: 'Quantidade', // Título da série
+                    data: [12, 19, 3], // Substitua pelos seus dados
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
