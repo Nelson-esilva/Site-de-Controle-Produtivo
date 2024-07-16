@@ -1,8 +1,18 @@
-{% extends "base.html" %}
-
-{% block title %}Profile{% endblock %}
-
-{% block content %}
-<h1>Profile</h1>
-<p>Welcome, {{ current_user.user }}</p>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Profile Page</h1>
+    <p>Welcome, {{ current_user.user }}!</p>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('relatorios') }}">Relatórios</a>
+    <a href="{{ url_for('analise_dos_dados') }}">Análise dos Dados</a>
+    <a href="{{ url_for('ocorrencias') }}">Ocorrências</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>

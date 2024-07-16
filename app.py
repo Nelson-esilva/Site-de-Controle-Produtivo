@@ -1,19 +1,21 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seu_banco_de_dados.db'
 app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
-login_manager = LoginManager(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+# Definição do modelo Usuario
 class Usuario(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.String(100), unique=True, nullable=False)
-    senha = db.Column(db.String(20), nullable=False)
-    matricula = db.Column(db.String(30), unique=True, nullable=False)
+    user = db.Column(db.String(80), unique=True, nullable=False)
+    senha = db.Column(db.String(120), nullable=False)
+    matricula = db.Column(db.String(20), unique=True, nullable=False)
 
 class DadosPrograma(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,6 +31,10 @@ class DadosPrograma(db.Model):
     acaocorre = db.Column(db.String(100))
     respons = db.Column(db.String(100))
     obs = db.Column(db.String(200))
+
+# Criação de todas as tabelas
+with app.app_context():
+    db.create_all()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -57,16 +63,11 @@ def register():
         username = request.form['username']
         password = request.form['password']
         matricula = request.form['matricula']
-        if Usuario.query.filter_by(user=username).first():
-            flash('Username already exists')
-        elif Usuario.query.filter_by(matricula=matricula).first():
-            flash('Matricula already exists')
-        else:
-            new_user = Usuario(user=username, senha=password, matricula=matricula)
-            db.session.add(new_user)
-            db.session.commit()
-            flash('User registered successfully')
-            return redirect(url_for('login'))
+        new_user = Usuario(user=username, senha=password, matricula=matricula)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('User registered successfully!')
+        return redirect(url_for('login'))
     return render_template('register.html')
 
 @app.route('/profile')
@@ -78,23 +79,18 @@ def profile():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('login'))
 
-@app.route('/analise_dados')
+@app.route('/relatorios')
 @login_required
-def analise_dados():
-    dados = DadosPrograma.query.all()
-    return render_template('analise_dados.html', dados=dados)
+def relatorios():
+    return render_template('relatorios.html')
 
-@app.route('/consultar_dados')
+@app.route('/analise-dos-dados', methods=['GET', 'POST'])
 @login_required
-def consultar_dados():
-    return render_template('consultar_dados.html')
-
-@app.route('/incluir_dados', methods=['GET', 'POST'])
-@login_required
-def incluir_dados():
+def analise_dos_dados():
     if request.method == 'POST':
+        # Handle data inclusion
         nproduto = request.form['nproduto']
         peso = request.form['peso']
         datai = request.form['datai']
@@ -107,13 +103,24 @@ def incluir_dados():
         acaocorre = request.form['acaocorre']
         respons = request.form['respons']
         obs = request.form['obs']
-        
-        novo_dado = DadosPrograma(nproduto=nproduto, peso=peso, datai=datai, horai=horai, dataf=dataf, horaf=horaf, marcha=marcha, defprod=defprod, motivo=motivo, acaocorre=acaocorre, respons=respons, obs=obs)
-        db.session.add(novo_dado)
+
+        new_data = DadosPrograma(
+            nproduto=nproduto, peso=peso, datai=datai, horai=horai, dataf=dataf,
+            horaf=horaf, marcha=marcha, defprod=defprod, motivo=motivo, 
+            acaocorre=acaocorre, respons=respons, obs=obs
+        )
+        db.session.add(new_data)
         db.session.commit()
-        flash('Dados incluídos com sucesso')
-        return redirect(url_for('analise_dados'))
-    return render_template('incluir_dados.html')
+        flash('Dados incluídos com sucesso!')
+        return redirect(url_for('analise_dos_dados'))
+
+    dados_programa = DadosPrograma.query.all()
+    return render_template('analise_dos_dados.html', dados_programa=dados_programa)
+
+@app.route('/ocorrencias')
+@login_required
+def ocorrencias():
+    return render_template('ocorrencias.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
