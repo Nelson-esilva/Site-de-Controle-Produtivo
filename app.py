@@ -79,6 +79,53 @@ def login():
 def profile():
     return render_template('profile.html', name=current_user.user)
 
+@app.route('/analise_dados')
+@login_required
+def analise_dados():
+    return render_template('analise_dados.html')
+
+@app.route('/consultar_dados')
+@login_required
+def consultar_dados():
+    dados = DadosPrograma.query.all()
+    return render_template('consultar_dados.html', dados=dados)
+
+@app.route('/incluir_dados', methods=['GET', 'POST'])
+@login_required
+def incluir_dados():
+    if request.method == 'POST':
+        nproduto = request.form['nproduto']
+        peso = request.form['peso']
+        datai = request.form['datai']
+        horai = request.form['horai']
+        dataf = request.form['dataf']
+        horaf = request.form['horaf']
+        marcha = 'marcha' in request.form
+        defprod = request.form['defprod']
+        motivo = request.form['motivo']
+        acaocorre = request.form['acaocorre']
+        respons = request.form['respons']
+        obs = request.form['obs']
+        
+        new_dado = DadosPrograma(nproduto=nproduto, peso=peso, datai=datai, horai=horai, dataf=dataf, horaf=horaf, marcha=marcha, defprod=defprod, motivo=motivo, acaocorre=acaocorre, respons=respons, obs=obs)
+        db.session.add(new_dado)
+        db.session.commit()
+        
+        flash('Dados incluídos com sucesso!')
+        return redirect(url_for('consultar_dados'))
+    
+    return render_template('incluir_dados.html')
+
+@app.route('/relatorios')
+@login_required
+def relatorios():
+    return "Página de Relatórios"
+
+@app.route('/ocorrencias')
+@login_required
+def ocorrencias():
+    return "Página de Ocorrências"
+
 @app.route('/logout')
 @login_required
 def logout():
