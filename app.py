@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask import jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from datetime import datetime, time
 
@@ -77,16 +78,22 @@ def register():
 def profile():
     return render_template('profile.html')
 
+@app.route('/relatorios')
+def relatorios():
+    dados = DadosPrograma.query.all()  # Obtém todos os dados cadastrados
+    
+    # Extraindo os dados para o gráfico
+    labels = [dado.nproduto for dado in dados]  # Produtos como labels
+    data = [dado.peso for dado in dados]        # Pesos como dados
+
+    return render_template('relatorios.html', labels=labels, data=data)
+
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
-@app.route('/relatorios')
-@login_required
-def relatorios():
-    return render_template('relatorios.html')
 
 @app.route('/analise-dos-dados', methods=['GET', 'POST'])
 @login_required
