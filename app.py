@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-import os
+from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -14,7 +13,7 @@ class Usuario(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String(100), unique=True, nullable=False)
     senha = db.Column(db.String(20), nullable=False)
-    matricula = db.Column(db.String(30))
+    matricula = db.Column(db.String(30), unique=True, nullable=False)
 
 class DadosPrograma(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,28 +29,6 @@ class DadosPrograma(db.Model):
     acaocorre = db.Column(db.String(100))
     respons = db.Column(db.String(100))
     obs = db.Column(db.String(200))
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        matricula = request.form['matricula']
-        
-        # Verificar se o usuário já existe
-        if Usuario.query.filter_by(user=username).first():
-            flash('Usuário já existe. Escolha outro.')
-            return redirect(url_for('register'))
-        
-        # Criar novo usuário
-        new_user = Usuario(user=username, senha=password, matricula=matricula)
-        db.session.add(new_user)
-        db.session.commit()
-        
-        flash('Usuário criado com sucesso! Você pode fazer login agora.')
-        return redirect(url_for('login'))
-    
-    return render_template('register.html')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -74,21 +51,45 @@ def login():
             flash('Login Failed. Check your username and password')
     return render_template('login.html')
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        matricula = request.form['matricula']
+        if Usuario.query.filter_by(user=username).first():
+            flash('Username already exists')
+        elif Usuario.query.filter_by(matricula=matricula).first():
+            flash('Matricula already exists')
+        else:
+            new_user = Usuario(user=username, senha=password, matricula=matricula)
+            db.session.add(new_user)
+            db.session.commit()
+            flash('User registered successfully')
+            return redirect(url_for('login'))
+    return render_template('register.html')
+
 @app.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html', name=current_user.user)
+    return render_template('profile.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 @app.route('/analise_dados')
 @login_required
 def analise_dados():
-    return render_template('analise_dados.html')
+    dados = DadosPrograma.query.all()
+    return render_template('analise_dados.html', dados=dados)
 
 @app.route('/consultar_dados')
 @login_required
 def consultar_dados():
-    dados = DadosPrograma.query.all()
-    return render_template('consultar_dados.html', dados=dados)
+    return render_template('consultar_dados.html')
 
 @app.route('/incluir_dados', methods=['GET', 'POST'])
 @login_required
@@ -107,36 +108,12 @@ def incluir_dados():
         respons = request.form['respons']
         obs = request.form['obs']
         
-        new_dado = DadosPrograma(nproduto=nproduto, peso=peso, datai=datai, horai=horai, dataf=dataf, horaf=horaf, marcha=marcha, defprod=defprod, motivo=motivo, acaocorre=acaocorre, respons=respons, obs=obs)
-        db.session.add(new_dado)
+        novo_dado = DadosPrograma(nproduto=nproduto, peso=peso, datai=datai, horai=horai, dataf=dataf, horaf=horaf, marcha=marcha, defprod=defprod, motivo=motivo, acaocorre=acaocorre, respons=respons, obs=obs)
+        db.session.add(novo_dado)
         db.session.commit()
-        
-        flash('Dados incluídos com sucesso!')
-        return redirect(url_for('consultar_dados'))
-    
+        flash('Dados incluídos com sucesso')
+        return redirect(url_for('analise_dados'))
     return render_template('incluir_dados.html')
 
-@app.route('/relatorios')
-@login_required
-def relatorios():
-    return "Página de Relatórios"
-
-@app.route('/ocorrencias')
-@login_required
-def ocorrencias():
-    return "Página de Ocorrências"
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('home'))
-
-def init_db():
-    with app.app_context():
-        db.create_all()
-        
 if __name__ == '__main__':
-    if not os.path.exists('users.db'):
-        init_db()
     app.run(debug=True)

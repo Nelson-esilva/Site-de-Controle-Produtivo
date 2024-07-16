@@ -1,16 +1,46 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análise dos Dados</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>Análise dos Dados</h1>
-    <ul>
-        <li><a href="{{ url_for('consultar_dados') }}">Consultar Dados</a></li>
-        <li><a href="{{ url_for('incluir_dados') }}">Incluir Dados</a></li>
-    </ul>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Análise dos Dados{% endblock %}
+
+{% block content %}
+<h1>Análise dos Dados</h1>
+<a href="{{ url_for('consultar_dados') }}">Consultar Dados</a> | <a href="{{ url_for('incluir_dados') }}">Incluir Dados</a>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Produto</th>
+            <th>Peso</th>
+            <th>Data Início</th>
+            <th>Hora Início</th>
+            <th>Data Fim</th>
+            <th>Hora Fim</th>
+            <th>Marcha</th>
+            <th>Defeito Produto</th>
+            <th>Motivo</th>
+            <th>Ação Corretiva</th>
+            <th>Responsável</th>
+            <th>Observações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dado in dados %}
+        <tr>
+            <td>{{ dado.id }}</td>
+            <td>{{ dado.nproduto }}</td>
+            <td>{{ dado.peso }}</td>
+            <td>{{ dado.datai }}</td>
+            <td>{{ dado.horai }}</td>
+            <td>{{ dado.dataf }}</td>
+            <td>{{ dado.horaf }}</td>
+            <td>{{ dado.marcha }}</td>
+            <td>{{ dado.defprod }}</td>
+            <td>{{ dado.motivo }}</td>
+            <td>{{ dado.acaocorre }}</td>
+            <td>{{ dado.respons }}</td>
+            <td>{{ dado.obs }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,39 +1,34 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incluir Dados</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>Incluir Dados do Programa</h1>
-    <form method="POST">
-        <label for="nproduto">Produto:</label>
-        <input type="text" name="nproduto" required>
-        <label for="peso">Peso:</label>
-        <input type="text" name="peso" required>
-        <label for="datai">Data Inicial:</label>
-        <input type="date" name="datai" required>
-        <label for="horai">Hora Inicial:</label>
-        <input type="time" name="horai" required>
-        <label for="dataf">Data Final:</label>
-        <input type="date" name="dataf" required>
-        <label for="horaf">Hora Final:</label>
-        <input type="time" name="horaf" required>
-        <label for="marcha">Marcha:</label>
-        <input type="checkbox" name="marcha">
-        <label for="defprod">Defeito do Produto:</label>
-        <input type="text" name="defprod">
-        <label for="motivo">Motivo:</label>
-        <input type="text" name="motivo">
-        <label for="acaocorre">Ação Corretiva:</label>
-        <input type="text" name="acaocorre">
-        <label for="respons">Responsável:</label>
-        <input type="text" name="respons">
-        <label for="obs">Observações:</label>
-        <input type="text" name="obs">
-        <button type="submit">Incluir Dados</button>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Incluir Dados{% endblock %}
+
+{% block content %}
+<h1>Incluir Dados</h1>
+<form method="POST">
+    <label for="nproduto">Nome do Produto</label>
+    <input type="text" id="nproduto" name="nproduto" required>
+    <label for="peso">Peso</label>
+    <input type="text" id="peso" name="peso" required>
+    <label for="datai">Data Início</label>
+    <input type="date" id="datai" name="datai" required>
+    <label for="horai">Hora Início</label>
+    <input type="time" id="horai" name="horai" required>
+    <label for="dataf">Data Fim</label>
+    <input type="date" id="dataf" name="dataf" required>
+    <label for="horaf">Hora Fim</label>
+    <input type="time" id="horaf" name="horaf" required>
+    <label for="marcha">Marcha</label>
+    <input type="checkbox" id="marcha" name="marcha">
+    <label for="defprod">Defeito do Produto</label>
+    <input type="text" id="defprod" name="defprod" required>
+    <label for="motivo">Motivo</label>
+    <input type="text" id="motivo" name="motivo" required>
+    <label for="acaocorre">Ação Corretiva</label>
+    <input type="text" id="acaocorre" name="acaocorre" required>
+    <label for="respons">Responsável</label>
+    <input type="text" id="respons" name="respons" required>
+    <label for="obs">Observações</label>
+    <textarea id="obs" name="obs"></textarea>
+    <button type="submit">Incluir Dados</button>
+</form>
+{% endblock %}
