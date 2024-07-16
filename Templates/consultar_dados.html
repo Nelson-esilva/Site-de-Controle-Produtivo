@@ -1,8 +1,43 @@
-{% extends "base.html" %}
-
-{% block title %}Consultar Dados{% endblock %}
-
-{% block content %}
-<h1>Consultar Dados</h1>
-<p>Aqui você pode consultar os dados do programa.</p>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Consultar Dados</title>
+</head>
+<body>
+    <h1>Consultar Dados</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Produto</th>
+                <th>Peso</th>
+                <th>Data Início</th>
+                <th>Hora Início</th>
+                <th>Data Fim</th>
+                <th>Hora Fim</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dado in dados %}
+            <tr>
+                <td>{{ dado.id }}</td>
+                <td>{{ dado.nproduto }}</td>
+                <td>{{ dado.peso }}</td>
+                <td>{{ dado.datai }}</td>
+                <td>{{ dado.horai }}</td>
+                <td>{{ dado.dataf }}</td>
+                <td>{{ dado.horaf }}</td>
+                <td>{{ dado.obs }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <nav>
+        <a href="{{ url_for('home') }}">Voltar para Home</a>
+    </nav>
+</body>
+</html>

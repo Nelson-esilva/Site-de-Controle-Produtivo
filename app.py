@@ -117,6 +117,11 @@ def analise_dos_dados():
     dados_programa = DadosPrograma.query.all()
     return render_template('analise_dos_dados.html', dados_programa=dados_programa)
 
+@app.route('/consultar_dados', methods=['GET'])
+def consultar_dados():
+    dados = DadosPrograma.query.all()  # Supondo que 'DadosPrograma' seja o modelo correto
+    return render_template('consultar_dados.html', dados=dados)
+
 @app.route('/ocorrencias')
 @login_required
 def ocorrencias():

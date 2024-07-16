@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>Home</title>
+    <title>Análise dos Dados</title>
 </head>
 <body>
-    <h1>Bem-vindo à Home</h1>
+    <h1>Análise dos Dados</h1>
     <nav>
-        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('consultar_dados') }}">Consultar Dados</a>
+        <a href="{{ url_for('incluir_dados') }}">Incluir Dados</a>
+        <a href="{{ url_for('home') }}">Voltar para Home</a>
     </nav>
 </body>
 </html>
