@@ -134,8 +134,8 @@ def logout():
 
 def init_db():
     with app.app_context():
-        db.create_all()  # Create tables if they don't exist
-
+        db.create_all()
+        
 if __name__ == '__main__':
     if not os.path.exists('users.db'):
         init_db()
