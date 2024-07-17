@@ -4,134 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <title>Consultar Dados</title>
 </head>
 <body>
-    <h1>Consultar Dados</h1>
+    <div class="container">
+        <h1>Consultar Dados</h1>
+        <form method="POST">
+            <label for="filtro">Filtro:</label>
+            <select name="filtro" id="filtro">
+                <option value="diaria">Diária</option>
+                <option value="mensal">Mensal</option>
+                <option value="intervalo">Intervalo de Tempo</option>
+            </select>
+            
+            <div id="intervalo" style="display: none;">
+                <label for="data_inicio">Data Início:</label>
+                <input type="date" name="data_inicio" id="data_inicio">
+                <label for="data_fim">Data Fim:</label>
+                <input type="date" name="data_fim" id="data_fim">
+            </div>
+            
+            <label>Colunas a Exibir:</label><br>
+            <input type="checkbox" name="colunas" value="nproduto" checked> Nome do Produto<br>
+            <input type="checkbox" name="colunas" value="peso" checked> Peso<br>
+            <input type="checkbox" name="colunas" value="datai" checked> Data Início<br>
+            <input type="checkbox" name="colunas" value="horai" checked> Hora Início<br>
+            <input type="checkbox" name="colunas" value="dataf"> Data Fim<br>
+            <input type="checkbox" name="colunas" value="horaf"> Hora Fim<br>
+            <input type="checkbox" name="colunas" value="marcha"> Marcha<br>
+            <input type="checkbox" name="colunas" value="defprod"> Def. Produto<br>
+            <input type="checkbox" name="colunas" value="motivo"> Motivo<br>
+            <input type="checkbox" name="colunas" value="acaocorre"> Ação Correta<br>
+            <input type="checkbox" name="colunas" value="respons"> Responsável<br>
+            <input type="checkbox" name="colunas" value="obs"> Observações<br>
 
-    <!-- Formulário de Filtros -->
-    <form id="filtrosForm">
-        <label for="filtro">Filtro:</label>
-        <select id="filtro" name="filtro">
-            <option value="diaria">Diária</option>
-            <option value="mensal">Mensal</option>
-            <option value="intervalo">Intervalo de Tempo</option>
-        </select>
+            <button type="submit">Pesquisar</button>
+        </form>
 
-        <div id="intervalo">
-            <label for="data_inicio">Data Início:</label>
-            <input type="date" id="data_inicio" name="data_inicio">
-            <label for="data_fim">Data Fim:</label>
-            <input type="date" id="data_fim" name="data_fim">
-        </div>
+        {% if dados %}
+            <table>
+                <thead>
+                    <tr>
+                        {% if 'nproduto' in dados[0] %}<th>Nome do Produto</th>{% endif %}
+                        {% if 'peso' in dados[0] %}<th>Peso</th>{% endif %}
+                        {% if 'datai' in dados[0] %}<th>Data Início</th>{% endif %}
+                        {% if 'horai' in dados[0] %}<th>Hora Início</th>{% endif %}
+                        {% if 'dataf' in dados[0] %}<th>Data Fim</th>{% endif %}
+                        {% if 'horaf' in dados[0] %}<th>Hora Fim</th>{% endif %}
+                        {% if 'marcha' in dados[0] %}<th>Marcha</th>{% endif %}
+                        {% if 'defprod' in dados[0] %}<th>Def. Produto</th>{% endif %}
+                        {% if 'motivo' in dados[0] %}<th>Motivo</th>{% endif %}
+                        {% if 'acaocorre' in dados[0] %}<th>Ação Correta</th>{% endif %}
+                        {% if 'respons' in dados[0] %}<th>Responsável</th>{% endif %}
+                        {% if 'obs' in dados[0] %}<th>Observações</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dado in dados %}
+                    <tr>
+                        {% if 'nproduto' in dado %}<td>{{ dado.nproduto }}</td>{% endif %}
+                        {% if 'peso' in dado %}<td>{{ dado.peso }}</td>{% endif %}
+                        {% if 'datai' in dado %}<td>{{ dado.datai }}</td>{% endif %}
+                        {% if 'horai' in dado %}<td>{{ dado.horai }}</td>{% endif %}
+                        {% if 'dataf' in dado %}<td>{{ dado.dataf }}</td>{% endif %}
+                        {% if 'horaf' in dado %}<td>{{ dado.horaf }}</td>{% endif %}
+                        {% if 'marcha' in dado %}<td>{{ dado.marcha }}</td>{% endif %}
+                        {% if 'defprod' in dado %}<td>{{ dado.defprod }}</td>{% endif %}
+                        {% if 'motivo' in dado %}<td>{{ dado.motivo }}</td>{% endif %}
+                        {% if 'acaocorre' in dado %}<td>{{ dado.acaocorre }}</td>{% endif %}
+                        {% if 'respons' in dado %}<td>{{ dado.respons }}</td>{% endif %}
+                        {% if 'obs' in dado %}<td>{{ dado.obs }}</td>{% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Nenhum dado encontrado.</p>
+        {% endif %}
+    </div>
 
-        <label for="colunas">Colunas:</label>
-        <select id="colunas" name="colunas" multiple>
-            <option value="id">ID</option>
-            <option value="nproduto">Produto</option>
-            <option value="peso">Peso</option>
-            <option value="datai">Data Início</option>
-            <option value="horai">Hora Início</option>
-            <option value="dataf">Data Fim</option>
-            <option value="horaf">Hora Fim</option>
-            <option value="marcha">Marcha</option>
-            <option value="defprod">Definição do Produto</option>
-            <option value="motivo">Motivo</option>
-            <option value="acaocorre">Ação Corretiva</option>
-            <option value="respons">Responsável</option>
-            <option value="obs">Observações</option>
-        </select>
-
-        <button type="submit">Filtrar</button>
-    </form>
-
-    <!-- Tabela de Dados -->
-    <table id="tabelaDados" class="display">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Produto</th>
-                <th>Peso</th>
-                <th>Data Início</th>
-                <th>Hora Início</th>
-                <th>Data Fim</th>
-                <th>Hora Fim</th>
-                <th>Marcha</th>
-                <th>Definição do Produto</th>
-                <th>Motivo</th>
-                <th>Ação Corretiva</th>
-                <th>Responsável</th>
-                <th>Observações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Dados serão preenchidos dinamicamente -->
-        </tbody>
-    </table>
-
-    <nav>
-        <a href="{{ url_for('home') }}">Voltar para Home</a>
-    </nav>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#tabelaDados').DataTable();
-
-            $('#intervalo').hide();
-
-            $('#filtro').change(function() {
-                if ($(this).val() === 'intervalo') {
-                    $('#intervalo').show();
-                } else {
-                    $('#intervalo').hide();
-                }
-            });
-
-            $('#filtrosForm').submit(function(event) {
-                event.preventDefault();
-                var filtro = $('#filtro').val();
-                var colunas = $('#colunas').val();
-                var data_inicio = $('#data_inicio').val();
-                var data_fim = $('#data_fim').val();
-
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ url_for("consultar_dados") }}',
-                    data: {
-                        filtro: filtro,
-                        colunas: colunas,
-                        data_inicio: data_inicio,
-                        data_fim: data_fim
-                    },
-                    success: function(response) {
-                        var table = $('#tabelaDados').DataTable();
-                        table.clear();
-
-                        response.forEach(function(item) {
-                            var row = [];
-                            if (colunas.includes('id')) row.push(item.id);
-                            if (colunas.includes('nproduto')) row.push(item.nproduto);
-                            if (colunas.includes('peso')) row.push(item.peso);
-                            if (colunas.includes('datai')) row.push(item.datai);
-                            if (colunas.includes('horai')) row.push(item.horai);
-                            if (colunas.includes('dataf')) row.push(item.dataf);
-                            if (colunas.includes('horaf')) row.push(item.horaf);
-                            if (colunas.includes('marcha')) row.push(item.marcha);
-                            if (colunas.includes('defprod')) row.push(item.defprod);
-                            if (colunas.includes('motivo')) row.push(item.motivo);
-                            if (colunas.includes('acaocorre')) row.push(item.acaocorre);
-                            if (colunas.includes('respons')) row.push(item.respons);
-                            if (colunas.includes('obs')) row.push(item.obs);
-                            table.row.add(row);
-                        });
-
-                        table.draw();
-                    }
-                });
-            });
+        document.getElementById('filtro').addEventListener('change', function() {
+            var selected = this.value;
+            var intervalo = document.getElementById('intervalo');
+            if (selected === 'intervalo') {
+                intervalo.style.display = 'block';
+            } else {
+                intervalo.style.display = 'none';
+            }
         });
     </script>
 </body>

@@ -43,6 +43,11 @@ with app.app_context():
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
+@app.route('/')
+def home():
+    return redirect(url_for('login'))  # Redireciona para a página de login
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -112,27 +117,48 @@ def consultar_dados():
 
         dados = query.all()
 
-        dados_json = []
+        dados_exibidos = []
         for dado in dados:
-            dados_json.append({
+            dado_info = {
                 'id': dado.id,
                 'nproduto': dado.nproduto,
                 'peso': dado.peso,
-                'datai': dado.datai.strftime('%Y-%m-%d'),
-                'horai': dado.horai.strftime('%H:%M:%S'),
-                'dataf': dado.dataf.strftime('%Y-%m-%d'),
-                'horaf': dado.horaf.strftime('%H:%M:%S'),
+                'datai': dado.datai.strftime('%Y-%m-%d'),  # Converte para string
+                'horai': dado.horai.strftime('%H:%M:%S'),  # Converte para string
+                'dataf': dado.dataf.strftime('%Y-%m-%d') if dado.dataf else None,
+                'horaf': dado.horaf.strftime('%H:%M:%S') if dado.horaf else None,
                 'marcha': dado.marcha,
                 'defprod': dado.defprod,
                 'motivo': dado.motivo,
                 'acaocorre': dado.acaocorre,
                 'respons': dado.respons,
                 'obs': dado.obs
-            })
+            }
 
-        return jsonify(dados_json)
+            # Adiciona colunas selecionadas
+            if 'dataf' not in colunas:
+                dado_info.pop('dataf')
+            if 'horaf' not in colunas:
+                dado_info.pop('horaf')
+            if 'marcha' not in colunas:
+                dado_info.pop('marcha')
+            if 'defprod' not in colunas:
+                dado_info.pop('defprod')
+            if 'motivo' not in colunas:
+                dado_info.pop('motivo')
+            if 'acaocorre' not in colunas:
+                dado_info.pop('acaocorre')
+            if 'respons' not in colunas:
+                dado_info.pop('respons')
+            if 'obs' not in colunas:
+                dado_info.pop('obs')
+
+            dados_exibidos.append(dado_info)
+
+        return render_template('consultar_dados.html', dados=dados_exibidos)
 
     return render_template('consultar_dados.html')
+
 
 @app.route('/incluir_dados', methods=['GET', 'POST'])
 @login_required
