@@ -15,21 +15,22 @@
                 <option value="diaria">Diária</option>
                 <option value="mensal">Mensal</option>
                 <option value="intervalo">Intervalo de Tempo</option>
+                <option value="todo">Todo o Período</option>
             </select>
 
             <div id="dataDiaria" style="display: none;">
                 <label for="data_diaria">Escolha o Dia:</label>
-                <input type="date" name="data_diaria" id="data_diaria" required>
+                <input type="date" name="data_diaria" id="data_diaria">
             </div>
 
             <div id="dataMensal" style="display: none;">
                 <label for="data_mensal">Escolha o Mês e Ano:</label>
-                <input type="month" name="data_mensal" id="data_mensal" required>
+                <input type="month" name="data_mensal" id="data_mensal">
             </div>
 
             <div id="intervalo" style="display: none;">
                 <label for="data_inicio">Data Início:</label>
-                <input type="date" name="data_inicio" id="data_inicio" required>
+                <input type="date" name="data_inicio" id="data_inicio">
                 <label for="data_fim">Data Fim:</label>
                 <input type="date" name="data_fim" id="data_fim">
             </div>
@@ -39,14 +40,14 @@
             <input type="checkbox" name="colunas" value="peso" checked> Peso<br>
             <input type="checkbox" name="colunas" value="datai" checked> Data Início<br>
             <input type="checkbox" name="colunas" value="horai" checked> Hora Início<br>
-            <input type="checkbox" name="colunas" value="dataf"> Data Fim<br>
-            <input type="checkbox" name="colunas" value="horaf"> Hora Fim<br>
-            <input type="checkbox" name="colunas" value="marcha"> Marcha<br>
-            <input type="checkbox" name="colunas" value="defprod"> Def. Produto<br>
-            <input type="checkbox" name="colunas" value="motivo"> Motivo<br>
-            <input type="checkbox" name="colunas" value="acaocorre"> Ação Correta<br>
-            <input type="checkbox" name="colunas" value="respons"> Responsável<br>
-            <input type="checkbox" name="colunas" value="obs"> Observações<br>
+            <input type="checkbox" name="colunas" value="dataf" checked> Data Fim<br>
+            <input type="checkbox" name="colunas" value="horaf" checked> Hora Fim<br>
+            <input type="checkbox" name="colunas" value="marcha" checked> Marcha<br>
+            <input type="checkbox" name="colunas" value="defprod" checked> Def. Produto<br>
+            <input type="checkbox" name="colunas" value="motivo" checked> Motivo<br>
+            <input type="checkbox" name="colunas" value="acaocorre" checked> Ação Correta<br>
+            <input type="checkbox" name="colunas" value="respons" checked> Responsável<br>
+            <input type="checkbox" name="colunas" value="obs" checked> Observações<br>
 
             <button type="submit">Pesquisar</button>
         </form>

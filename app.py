@@ -4,7 +4,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///banco_de_dados.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seu_banco_de_dados.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
@@ -46,7 +46,6 @@ def load_user(user_id):
 @app.route('/')
 def home():
     return redirect(url_for('login'))  # Redireciona para a página de login
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -188,7 +187,7 @@ def incluir_dados():
         db.session.add(novo_dado)
         db.session.commit()
         flash('Dados incluídos com sucesso!')
-        return redirect(url_for('consultar_dados'))
+        return redirect(url_for('profile'))
     
     return render_template('incluir_dados.html')
 
