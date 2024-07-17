@@ -16,14 +16,24 @@
                 <option value="mensal">Mensal</option>
                 <option value="intervalo">Intervalo Tempo</option>
             </select>
-            
+
+            <div id="dataDiaria" style="display: none;">
+                <label for="data_diaria">Escolha o Dia:</label>
+                <input type="date" name="data_diaria" id="data_diaria" required>
+            </div>
+
+            <div id="dataMensal" style="display: none;">
+                <label for="data_mensal">Escolha o Mês e Ano:</label>
+                <input type="month" name="data_mensal" id="data_mensal" required>
+            </div>
+
             <div id="intervalo" style="display: none;">
                 <label for="data_inicio">Data Início:</label>
-                <input type="date" name="data_inicio" id="data_inicio">
+                <input type="date" name="data_inicio" id="data_inicio" required>
                 <label for="data_fim">Data Fim:</label>
                 <input type="date" name="data_fim" id="data_fim">
             </div>
-            
+
             <label>Colunas a Exibir:</label><br>
             <input type="checkbox" name="colunas" value="nproduto" checked> Nome do Produto<br>
             <input type="checkbox" name="colunas" value="peso" checked> Peso<br>
@@ -86,12 +96,9 @@
     <script>
         document.getElementById('filtro').addEventListener('change', function() {
             var selected = this.value;
-            var intervalo = document.getElementById('intervalo');
-            if (selected === 'intervalo') {
-                intervalo.style.display = 'block';
-            } else {
-                intervalo.style.display = 'none';
-            }
+            document.getElementById('dataDiaria').style.display = (selected === 'diaria') ? 'block' : 'none';
+            document.getElementById('dataMensal').style.display = (selected === 'mensal') ? 'block' : 'none';
+            document.getElementById('intervalo').style.display = (selected === 'intervalo') ? 'block' : 'none';
         });
     </script>
 </body>
