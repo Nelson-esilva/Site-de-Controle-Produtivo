@@ -4,11 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <title>Consultar Dados</title>
 </head>
 <body>
     <h1>Consultar Dados</h1>
-    <table>
+
+    <!-- Formulário de Filtros -->
+    <form id="filtrosForm">
+        <label for="filtro">Filtro:</label>
+        <select id="filtro" name="filtro">
+            <option value="diaria">Diária</option>
+            <option value="mensal">Mensal</option>
+            <option value="intervalo">Intervalo de Tempo</option>
+        </select>
+
+        <div id="intervalo">
+            <label for="data_inicio">Data Início:</label>
+            <input type="date" id="data_inicio" name="data_inicio">
+            <label for="data_fim">Data Fim:</label>
+            <input type="date" id="data_fim" name="data_fim">
+        </div>
+
+        <label for="colunas">Colunas:</label>
+        <select id="colunas" name="colunas" multiple>
+            <option value="id">ID</option>
+            <option value="nproduto">Produto</option>
+            <option value="peso">Peso</option>
+            <option value="datai">Data Início</option>
+            <option value="horai">Hora Início</option>
+            <option value="dataf">Data Fim</option>
+            <option value="horaf">Hora Fim</option>
+            <option value="marcha">Marcha</option>
+            <option value="defprod">Definição do Produto</option>
+            <option value="motivo">Motivo</option>
+            <option value="acaocorre">Ação Corretiva</option>
+            <option value="respons">Responsável</option>
+            <option value="obs">Observações</option>
+        </select>
+
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <!-- Tabela de Dados -->
+    <table id="tabelaDados" class="display">
         <thead>
             <tr>
                 <th>ID</th>
@@ -27,27 +66,73 @@
             </tr>
         </thead>
         <tbody>
-            {% for dado in dados %}
-            <tr>
-                <td>{{ dado.id }}</td>
-                <td>{{ dado.nproduto }}</td>
-                <td>{{ dado.peso }}</td>
-                <td>{{ dado.datai }}</td>
-                <td>{{ dado.horai }}</td>
-                <td>{{ dado.dataf }}</td>
-                <td>{{ dado.horaf }}</td>
-                <td>{{ dado.marcha }}</td>
-                <td>{{ dado.defprod }}</td>
-                <td>{{ dado.motivo }}</td>
-                <td>{{ dado.acaocorre }}</td>
-                <td>{{ dado.respons }}</td>
-                <td>{{ dado.obs }}</td>
-            </tr>
-            {% endfor %}
+            <!-- Dados serão preenchidos dinamicamente -->
         </tbody>
     </table>
+
     <nav>
-        <a href="{{ url_for('analise_dos_dados') }}">Voltar</a>
+        <a href="{{ url_for('home') }}">Voltar para Home</a>
     </nav>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#tabelaDados').DataTable();
+
+            $('#intervalo').hide();
+
+            $('#filtro').change(function() {
+                if ($(this).val() === 'intervalo') {
+                    $('#intervalo').show();
+                } else {
+                    $('#intervalo').hide();
+                }
+            });
+
+            $('#filtrosForm').submit(function(event) {
+                event.preventDefault();
+                var filtro = $('#filtro').val();
+                var colunas = $('#colunas').val();
+                var data_inicio = $('#data_inicio').val();
+                var data_fim = $('#data_fim').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url_for("consultar_dados") }}',
+                    data: {
+                        filtro: filtro,
+                        colunas: colunas,
+                        data_inicio: data_inicio,
+                        data_fim: data_fim
+                    },
+                    success: function(response) {
+                        var table = $('#tabelaDados').DataTable();
+                        table.clear();
+
+                        response.forEach(function(item) {
+                            var row = [];
+                            if (colunas.includes('id')) row.push(item.id);
+                            if (colunas.includes('nproduto')) row.push(item.nproduto);
+                            if (colunas.includes('peso')) row.push(item.peso);
+                            if (colunas.includes('datai')) row.push(item.datai);
+                            if (colunas.includes('horai')) row.push(item.horai);
+                            if (colunas.includes('dataf')) row.push(item.dataf);
+                            if (colunas.includes('horaf')) row.push(item.horaf);
+                            if (colunas.includes('marcha')) row.push(item.marcha);
+                            if (colunas.includes('defprod')) row.push(item.defprod);
+                            if (colunas.includes('motivo')) row.push(item.motivo);
+                            if (colunas.includes('acaocorre')) row.push(item.acaocorre);
+                            if (colunas.includes('respons')) row.push(item.respons);
+                            if (colunas.includes('obs')) row.push(item.obs);
+                            table.row.add(row);
+                        });
+
+                        table.draw();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

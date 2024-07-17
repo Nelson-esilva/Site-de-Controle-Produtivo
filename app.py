@@ -1,13 +1,13 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
+from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask import jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from datetime import datetime, time
-
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seu_banco_de_dados.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
+
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -43,10 +43,6 @@ with app.app_context():
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
-@app.route('/')
-def home():
-    return render_template('home.html')
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -80,14 +76,10 @@ def profile():
 
 @app.route('/relatorios')
 def relatorios():
-    dados = DadosPrograma.query.all()  # Obtém todos os dados cadastrados
-    
-    # Extraindo os dados para o gráfico
-    labels = [dado.nproduto for dado in dados]  # Produtos como labels
-    data = [dado.peso for dado in dados]        # Pesos como dados
-
+    dados = DadosPrograma.query.all()
+    labels = [dado.nproduto for dado in dados]
+    data = [dado.peso for dado in dados]
     return render_template('relatorios.html', labels=labels, data=data)
-
 
 @app.route('/logout')
 @login_required
@@ -95,15 +87,52 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route('/analise-dos-dados', methods=['GET', 'POST'])
-@login_required
-def analise_dos_dados():
-    return render_template('analise_dos_dados.html')
-
-@app.route('/consultar_dados', methods=['GET'])
+@app.route('/consultar_dados', methods=['GET', 'POST'])
 def consultar_dados():
-    dados = DadosPrograma.query.all()  # Ou outra lógica para obter dados
-    return render_template('consultar_dados.html', dados=dados)
+    if request.method == 'POST':
+        filtro = request.form.get('filtro')
+        colunas = request.form.getlist('colunas')
+        data_inicio = request.form.get('data_inicio')
+        data_fim = request.form.get('data_fim')
+
+        query = DadosPrograma.query
+
+        if filtro == 'diaria':
+            hoje = datetime.now().date()
+            query = query.filter(DadosPrograma.datai == hoje)
+        elif filtro == 'mensal':
+            mes_atual = datetime.now().month
+            ano_atual = datetime.now().year
+            query = query.filter(db.extract('month', DadosPrograma.datai) == mes_atual,
+                                 db.extract('year', DadosPrograma.datai) == ano_atual)
+        elif data_inicio and data_fim:
+            data_inicio = datetime.strptime(data_inicio, '%Y-%m-%d')
+            data_fim = datetime.strptime(data_fim, '%Y-%m-%d')
+            query = query.filter(DadosPrograma.datai.between(data_inicio, data_fim))
+
+        dados = query.all()
+
+        dados_json = []
+        for dado in dados:
+            dados_json.append({
+                'id': dado.id,
+                'nproduto': dado.nproduto,
+                'peso': dado.peso,
+                'datai': dado.datai.strftime('%Y-%m-%d'),
+                'horai': dado.horai.strftime('%H:%M:%S'),
+                'dataf': dado.dataf.strftime('%Y-%m-%d'),
+                'horaf': dado.horaf.strftime('%H:%M:%S'),
+                'marcha': dado.marcha,
+                'defprod': dado.defprod,
+                'motivo': dado.motivo,
+                'acaocorre': dado.acaocorre,
+                'respons': dado.respons,
+                'obs': dado.obs
+            })
+
+        return jsonify(dados_json)
+
+    return render_template('consultar_dados.html')
 
 @app.route('/incluir_dados', methods=['GET', 'POST'])
 @login_required
@@ -112,17 +141,16 @@ def incluir_dados():
         nproduto = request.form['nproduto']
         peso = request.form['peso']
         datai = datetime.strptime(request.form['datai'], '%Y-%m-%d').date()
-        horai = datetime.strptime(request.form['horai'], '%H:%M').time()  # Converte para time
+        horai = datetime.strptime(request.form['horai'], '%H:%M').time()
         dataf = datetime.strptime(request.form['dataf'], '%Y-%m-%d').date()
-        horaf = datetime.strptime(request.form['horaf'], '%H:%M').time()  # Converte para time
-        marcha = request.form.get('marcha') == 'True'  # Converte checkbox
+        horaf = datetime.strptime(request.form['horaf'], '%H:%M').time()
+        marcha = request.form.get('marcha') == 'True'
         defprod = request.form['defprod']
         motivo = request.form['motivo']
         acaocorre = request.form['acaocorre']
         respons = request.form['respons']
         obs = request.form['obs']
 
-        # Criação do novo registro
         novo_dado = DadosPrograma(
             nproduto=nproduto,
             peso=peso,
@@ -138,11 +166,10 @@ def incluir_dados():
             obs=obs
         )
 
-        # Adiciona e comita a nova entrada
         db.session.add(novo_dado)
         db.session.commit()
         flash('Dados incluídos com sucesso!')
-        return redirect(url_for('analise_dos_dados'))
+        return redirect(url_for('consultar_dados'))
     
     return render_template('incluir_dados.html')
 
