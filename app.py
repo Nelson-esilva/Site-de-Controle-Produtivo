@@ -94,26 +94,33 @@ def logout():
 
 @app.route('/consultar_dados', methods=['GET', 'POST'])
 def consultar_dados():
+    dados_json = []
     if request.method == 'POST':
         filtro = request.form.get('filtro')
         colunas = request.form.getlist('colunas')
-        data_inicio = request.form.get('data_inicio')
-        data_fim = request.form.get('data_fim')
-
         query = DadosPrograma.query
 
         if filtro == 'diaria':
-            hoje = datetime.now().date()
-            query = query.filter(DadosPrograma.datai == hoje)
+            dia = request.form.get('data_diaria')
+            if dia:
+                dia = datetime.strptime(dia, '%Y-%m-%d').date()
+                query = query.filter(DadosPrograma.datai == dia)
         elif filtro == 'mensal':
-            mes_atual = datetime.now().month
-            ano_atual = datetime.now().year
-            query = query.filter(db.extract('month', DadosPrograma.datai) == mes_atual,
-                                 db.extract('year', DadosPrograma.datai) == ano_atual)
-        elif data_inicio and data_fim:
-            data_inicio = datetime.strptime(data_inicio, '%Y-%m-%d')
-            data_fim = datetime.strptime(data_fim, '%Y-%m-%d')
-            query = query.filter(DadosPrograma.datai.between(data_inicio, data_fim))
+            mes = request.form.get('data_mensal')
+            if mes:
+                ano, mes = mes.split('-')
+                query = query.filter(db.extract('month', DadosPrograma.datai) == int(mes),
+                                    db.extract('year', DadosPrograma.datai) == int(ano))
+        elif filtro == 'intervalo':
+            data_inicio = request.form.get('data_inicio')
+            data_fim = request.form.get('data_fim')
+            if data_inicio and data_fim:
+                data_inicio = datetime.strptime(data_inicio, '%Y-%m-%d')
+                data_fim = datetime.strptime(data_fim, '%Y-%m-%d')
+                query = query.filter(DadosPrograma.datai.between(data_inicio, data_fim))
+        elif filtro == 'todo':
+            # Nenhum filtro específico, apenas todos os dados
+            pass
 
         dados = query.all()
 
@@ -123,10 +130,10 @@ def consultar_dados():
                 'id': dado.id,
                 'nproduto': dado.nproduto,
                 'peso': dado.peso,
-                'datai': dado.datai.strftime('%Y-%m-%d'),  # Converte para string
-                'horai': dado.horai.strftime('%H:%M:%S'),  # Converte para string
-                'dataf': dado.dataf.strftime('%Y-%m-%d') if dado.dataf else None,
-                'horaf': dado.horaf.strftime('%H:%M:%S') if dado.horaf else None,
+                'datai': dado.datai.strftime('%d/%m/%Y'),  # Formato brasileiro
+                'horai': dado.horai.strftime('%H:%M:%S') if dado.horai else '',
+                'dataf': dado.dataf.strftime('%d/%m/%Y') if dado.dataf else '',
+                'horaf': dado.horaf.strftime('%H:%M:%S') if dado.horaf else '',
                 'marcha': dado.marcha,
                 'defprod': dado.defprod,
                 'motivo': dado.motivo,
@@ -136,29 +143,15 @@ def consultar_dados():
             }
 
             # Adiciona colunas selecionadas
-            if 'dataf' not in colunas:
-                dado_info.pop('dataf')
-            if 'horaf' not in colunas:
-                dado_info.pop('horaf')
-            if 'marcha' not in colunas:
-                dado_info.pop('marcha')
-            if 'defprod' not in colunas:
-                dado_info.pop('defprod')
-            if 'motivo' not in colunas:
-                dado_info.pop('motivo')
-            if 'acaocorre' not in colunas:
-                dado_info.pop('acaocorre')
-            if 'respons' not in colunas:
-                dado_info.pop('respons')
-            if 'obs' not in colunas:
-                dado_info.pop('obs')
+            for coluna in list(dado_info.keys()):
+                if coluna not in colunas:
+                    dado_info.pop(coluna)
 
             dados_exibidos.append(dado_info)
 
         return render_template('consultar_dados.html', dados=dados_exibidos)
 
-    return render_template('consultar_dados.html')
-
+    return render_template('consultar_dados.html', dados=dados_json)
 
 @app.route('/incluir_dados', methods=['GET', 'POST'])
 @login_required
