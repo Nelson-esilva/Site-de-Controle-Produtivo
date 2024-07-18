@@ -82,28 +82,33 @@ def profile():
     return render_template('profile.html')
 
 @app.route('/relatorios', methods=['GET', 'POST'])
+@login_required
 def relatorios():
     colunas = [col.name for col in DadosPrograma.__table__.columns]
     dados = DadosPrograma.query.all()
     df = pd.DataFrame([(dado.nproduto, dado.peso, dado.datai, dado.horai, dado.dataf, dado.horaf, dado.marcha, dado.defprod, dado.motivo, dado.acaocorre, dado.respons, dado.obs) for dado in dados],
                       columns=['nproduto', 'peso', 'datai', 'horai', 'dataf', 'horaf', 'marcha', 'defprod', 'motivo', 'acaocorre', 'respons', 'obs'])
 
-    fig = None
+    graph_html = ""
     selected_columns = []
+    graph_type = "bar"
 
     if request.method == 'POST':
         selected_columns = request.form.getlist('colunas')
+        graph_type = request.form.get('tipo_grafico')
         if selected_columns:
             df = df[selected_columns]
-            fig = px.line(df, x=selected_columns[0], y=selected_columns[1:])
+            if graph_type == 'line':
+                fig = px.line(df, x=selected_columns[0], y=selected_columns[1:])
+            elif graph_type == 'bar':
+                fig = px.bar(df, x=selected_columns[0], y=selected_columns[1:])
+            elif graph_type == 'pie':
+                fig = px.pie(df, names=selected_columns[0], values=selected_columns[1])
+            elif graph_type == 'scatter':
+                fig = px.scatter(df, x=selected_columns[0], y=selected_columns[1])
             graph_html = pio.to_html(fig, full_html=False)
-        else:
-            graph_html = ""
 
-    else:
-        graph_html = ""
-
-    return render_template('relatorios.html', colunas=colunas, graph_html=graph_html, selected_columns=selected_columns)
+    return render_template('relatorios.html', colunas=colunas, graph_html=graph_html, selected_columns=selected_columns, graph_type=graph_type)
 
 @app.route('/logout')
 @login_required

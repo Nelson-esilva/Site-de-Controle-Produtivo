@@ -5,36 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Relatórios</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Relatórios</h1>
-    <canvas id="myChart" width="400" height="200"></canvas>
-    <script>
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const myChart = new Chart(ctx, {
-            type: 'bar',  // ou 'line', 'pie', etc.
-            data: {
-                labels: {{ labels | tojson }},  // Converte para JSON
-                datasets: [{
-                    label: 'Peso dos Produtos',
-                    data: {{ data | tojson }},    // Converte para JSON
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
-    <nav>
-        <a href="{{ url_for('profile') }}">Paginal Incial</a>
-    </nav>
+    <div class="container">
+        <h1>Relatórios</h1>
+        <form method="post">
+            <div class="form-group">
+                <label for="colunas">Selecione as colunas:</label>
+                <select name="colunas" id="colunas" multiple>
+                    {% for coluna in colunas %}
+                        <option value="{{ coluna }}" {% if coluna in selected_columns %}selected{% endif %}>{{ coluna }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tipo_grafico">Tipo de Gráfico:</label>
+                <select name="tipo_grafico" id="tipo_grafico">
+                    <option value="bar" {% if graph_type == 'bar' %}selected{% endif %}>Barras</option>
+                    <option value="line" {% if graph_type == 'line' %}selected{% endif %}>Tendência</option>
+                    <option value="pie" {% if graph_type == 'pie' %}selected{% endif %}>Pizza</option>
+                    <option value="scatter" {% if graph_type == 'scatter' %}selected{% endif %}>Dispersão</option>
+                </select>
+            </div>
+            <button type="submit">Gerar Gráfico</button>
+        </form>
+        <div class="graph">
+            {{ graph_html|safe }}
+        </div>
+        <nav>
+            <a href="{{ url_for('profile') }}">Página Inicial</a>
+        </nav>
+    </div>
 </body>
 </html>
+

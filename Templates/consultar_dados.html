@@ -93,6 +93,10 @@
             <p>Nenhum dado encontrado.</p>
         {% endif %}
     </div>
+    
+    <nav>
+        <a href="{{ url_for('profile') }}">Voltar</a>
+    </nav>
 
     <script>
         document.getElementById('filtro').addEventListener('change', function() {
