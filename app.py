@@ -96,19 +96,32 @@ def relatorios():
     if request.method == 'POST':
         selected_columns = request.form.getlist('colunas')
         graph_type = request.form.get('tipo_grafico')
+        
         if selected_columns:
-            df = df[selected_columns]
-            if graph_type == 'line':
-                fig = px.line(df, x=selected_columns[0], y=selected_columns[1:])
-            elif graph_type == 'bar':
-                fig = px.bar(df, x=selected_columns[0], y=selected_columns[1:])
-            elif graph_type == 'pie':
-                fig = px.pie(df, names=selected_columns[0], values=selected_columns[1])
-            elif graph_type == 'scatter':
-                fig = px.scatter(df, x=selected_columns[0], y=selected_columns[1])
-            graph_html = pio.to_html(fig, full_html=False)
-
+            try:
+                if len(selected_columns) < 2 and graph_type != 'pie':
+                    flash("Selecione pelo menos duas colunas para gráficos de barras, linhas ou dispersão.")
+                elif graph_type == 'pie' and len(selected_columns) != 2:
+                    flash("Selecione exatamente duas colunas para gráficos de pizza.")
+                else:
+                    df = df[selected_columns]
+                    if graph_type == 'line':
+                        fig = px.line(df, x=selected_columns[0], y=selected_columns[1:])
+                    elif graph_type == 'bar':
+                        fig = px.bar(df, x=selected_columns[0], y=selected_columns[1:])
+                    elif graph_type == 'pie':
+                        fig = px.pie(df, names=selected_columns[0], values=selected_columns[1])
+                    elif graph_type == 'scatter':
+                        fig = px.scatter(df, x=selected_columns[0], y=selected_columns[1])
+                    graph_html = pio.to_html(fig, full_html=False)
+            except KeyError:
+                flash("Erro ao gerar o gráfico. Verifique as colunas selecionadas.")
+            except IndexError:
+                flash("Erro ao gerar o gráfico. Verifique as colunas selecionadas.")
+                
     return render_template('relatorios.html', colunas=colunas, graph_html=graph_html, selected_columns=selected_columns, graph_type=graph_type)
+
+
 
 @app.route('/logout')
 @login_required
