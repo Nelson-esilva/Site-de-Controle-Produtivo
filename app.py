@@ -97,13 +97,20 @@ def get_chart_data():
     if not selected_columns:
         return jsonify({'error': 'No columns selected'}), 400
 
-    query = f"SELECT {', '.join(selected_columns)} FROM DadosPrograma"
-    df = pd.read_sql_query(query, db.engine)
+    try:
+        # Construa a consulta SQL
+        query = f"SELECT {', '.join(selected_columns)} FROM DadosPrograma"
+        df = pd.read_sql_query(query, db.engine)
 
-    return jsonify({
-        'data': df.to_dict(orient='list'),
-        'columns': selected_columns
-    })
+        # Formate os dados para JSON
+        data = df.to_dict(orient='list')
+
+        return jsonify({
+            'data': data,
+            'columns': selected_columns
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/logout')
 @login_required
