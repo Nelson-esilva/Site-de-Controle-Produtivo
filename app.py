@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from datetime import datetime
 import pandas as pd
+import json
 import plotly.express as px
 import plotly.io as pio
 
@@ -81,47 +82,28 @@ def register():
 def profile():
     return render_template('profile.html')
 
-@app.route('/relatorios', methods=['GET', 'POST'])
+@app.route('/relatorios')
 @login_required
 def relatorios():
     colunas = [col.name for col in DadosPrograma.__table__.columns]
-    dados = DadosPrograma.query.all()
-    df = pd.DataFrame([(dado.nproduto, dado.peso, dado.datai, dado.horai, dado.dataf, dado.horaf, dado.marcha, dado.defprod, dado.motivo, dado.acaocorre, dado.respons, dado.obs) for dado in dados],
-                      columns=['nproduto', 'peso', 'datai', 'horai', 'dataf', 'horaf', 'marcha', 'defprod', 'motivo', 'acaocorre', 'respons', 'obs'])
+    return render_template('relatorios.html', colunas=colunas)
 
-    graph_html = ""
-    selected_columns = []
-    graph_type = "bar"
+@app.route('/data', methods=['POST'])
+@login_required
+def get_chart_data():
+    selected_columns = request.json.get('selected_columns')
+    graph_type = request.json.get('graph_type')
 
-    if request.method == 'POST':
-        selected_columns = request.form.getlist('colunas')
-        graph_type = request.form.get('tipo_grafico')
-        
-        if selected_columns:
-            try:
-                if len(selected_columns) < 2 and graph_type != 'pie':
-                    flash("Selecione pelo menos duas colunas para gráficos de barras, linhas ou dispersão.")
-                elif graph_type == 'pie' and len(selected_columns) != 2:
-                    flash("Selecione exatamente duas colunas para gráficos de pizza.")
-                else:
-                    df = df[selected_columns]
-                    if graph_type == 'line':
-                        fig = px.line(df, x=selected_columns[0], y=selected_columns[1:])
-                    elif graph_type == 'bar':
-                        fig = px.bar(df, x=selected_columns[0], y=selected_columns[1:])
-                    elif graph_type == 'pie':
-                        fig = px.pie(df, names=selected_columns[0], values=selected_columns[1])
-                    elif graph_type == 'scatter':
-                        fig = px.scatter(df, x=selected_columns[0], y=selected_columns[1])
-                    graph_html = pio.to_html(fig, full_html=False)
-            except KeyError:
-                flash("Erro ao gerar o gráfico. Verifique as colunas selecionadas.")
-            except IndexError:
-                flash("Erro ao gerar o gráfico. Verifique as colunas selecionadas.")
-                
-    return render_template('relatorios.html', colunas=colunas, graph_html=graph_html, selected_columns=selected_columns, graph_type=graph_type)
+    if not selected_columns:
+        return jsonify({'error': 'No columns selected'}), 400
 
+    query = f"SELECT {', '.join(selected_columns)} FROM DadosPrograma"
+    df = pd.read_sql_query(query, db.engine)
 
+    return jsonify({
+        'data': df.to_dict(orient='list'),
+        'columns': selected_columns
+    })
 
 @app.route('/logout')
 @login_required
