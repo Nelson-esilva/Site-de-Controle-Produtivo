@@ -2,6 +2,9 @@ from flask import Flask, render_template, redirect, url_for, request, flash, jso
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from datetime import datetime
+import pandas as pd
+import plotly.express as px
+import plotly.io as pio
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seu_banco_de_dados.db'
@@ -78,12 +81,29 @@ def register():
 def profile():
     return render_template('profile.html')
 
-@app.route('/relatorios')
+@app.route('/relatorios', methods=['GET', 'POST'])
 def relatorios():
+    colunas = [col.name for col in DadosPrograma.__table__.columns]
     dados = DadosPrograma.query.all()
-    labels = [dado.nproduto for dado in dados]
-    data = [dado.peso for dado in dados]
-    return render_template('relatorios.html', labels=labels, data=data)
+    df = pd.DataFrame([(dado.nproduto, dado.peso, dado.datai, dado.horai, dado.dataf, dado.horaf, dado.marcha, dado.defprod, dado.motivo, dado.acaocorre, dado.respons, dado.obs) for dado in dados],
+                      columns=['nproduto', 'peso', 'datai', 'horai', 'dataf', 'horaf', 'marcha', 'defprod', 'motivo', 'acaocorre', 'respons', 'obs'])
+
+    fig = None
+    selected_columns = []
+
+    if request.method == 'POST':
+        selected_columns = request.form.getlist('colunas')
+        if selected_columns:
+            df = df[selected_columns]
+            fig = px.line(df, x=selected_columns[0], y=selected_columns[1:])
+            graph_html = pio.to_html(fig, full_html=False)
+        else:
+            graph_html = ""
+
+    else:
+        graph_html = ""
+
+    return render_template('relatorios.html', colunas=colunas, graph_html=graph_html, selected_columns=selected_columns)
 
 @app.route('/logout')
 @login_required
