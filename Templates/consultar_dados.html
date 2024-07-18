@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cst.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <title>Consultar Dados</title>
 </head>
 <body>
@@ -35,7 +36,7 @@
                 <input type="date" name="data_fim" id="data_fim">
             </div>
 
-            <label>Colunas a Exibir:</label><br>
+            <label>Colunas a Exibir:</label>
             <input type="checkbox" name="colunas" value="nproduto" checked> Nome do Produto<br>
             <input type="checkbox" name="colunas" value="peso" checked> Peso<br>
             <input type="checkbox" name="colunas" value="datai" checked> Data Início<br>
@@ -53,42 +54,44 @@
         </form>
 
         {% if dados %}
-            <table>
-                <thead>
-                    <tr>
-                        {% if 'nproduto' in dados[0] %}<th>Nome do Produto</th>{% endif %}
-                        {% if 'peso' in dados[0] %}<th>Peso</th>{% endif %}
-                        {% if 'datai' in dados[0] %}<th>Data Início</th>{% endif %}
-                        {% if 'horai' in dados[0] %}<th>Hora Início</th>{% endif %}
-                        {% if 'dataf' in dados[0] %}<th>Data Fim</th>{% endif %}
-                        {% if 'horaf' in dados[0] %}<th>Hora Fim</th>{% endif %}
-                        {% if 'marcha' in dados[0] %}<th>Marcha</th>{% endif %}
-                        {% if 'defprod' in dados[0] %}<th>Def. Produto</th>{% endif %}
-                        {% if 'motivo' in dados[0] %}<th>Motivo</th>{% endif %}
-                        {% if 'acaocorre' in dados[0] %}<th>Ação Correta</th>{% endif %}
-                        {% if 'respons' in dados[0] %}<th>Responsável</th>{% endif %}
-                        {% if 'obs' in dados[0] %}<th>Observações</th>{% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for dado in dados %}
-                    <tr>
-                        {% if 'nproduto' in dado %}<td>{{ dado.nproduto }}</td>{% endif %}
-                        {% if 'peso' in dado %}<td>{{ dado.peso }}</td>{% endif %}
-                        {% if 'datai' in dado %}<td>{{ dado.datai }}</td>{% endif %}
-                        {% if 'horai' in dado %}<td>{{ dado.horai }}</td>{% endif %}
-                        {% if 'dataf' in dado %}<td>{{ dado.dataf }}</td>{% endif %}
-                        {% if 'horaf' in dado %}<td>{{ dado.horaf }}</td>{% endif %}
-                        {% if 'marcha' in dado %}<td>{{ dado.marcha }}</td>{% endif %}
-                        {% if 'defprod' in dado %}<td>{{ dado.defprod }}</td>{% endif %}
-                        {% if 'motivo' in dado %}<td>{{ dado.motivo }}</td>{% endif %}
-                        {% if 'acaocorre' in dado %}<td>{{ dado.acaocorre }}</td>{% endif %}
-                        {% if 'respons' in dado %}<td>{{ dado.respons }}</td>{% endif %}
-                        {% if 'obs' in dado %}<td>{{ dado.obs }}</td>{% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="style-tabela">
+                <table>
+                    <thead>
+                        <tr>
+                            {% if 'nproduto' in dados[0] %}<th>Nome do Produto</th>{% endif %}
+                            {% if 'peso' in dados[0] %}<th>Peso</th>{% endif %}
+                            {% if 'datai' in dados[0] %}<th>Data Início</th>{% endif %}
+                            {% if 'horai' in dados[0] %}<th>Hora Início</th>{% endif %}
+                            {% if 'dataf' in dados[0] %}<th>Data Fim</th>{% endif %}
+                            {% if 'horaf' in dados[0] %}<th>Hora Fim</th>{% endif %}
+                            {% if 'marcha' in dados[0] %}<th>Marcha</th>{% endif %}
+                            {% if 'defprod' in dados[0] %}<th>Def. Produto</th>{% endif %}
+                            {% if 'motivo' in dados[0] %}<th>Motivo</th>{% endif %}
+                            {% if 'acaocorre' in dados[0] %}<th>Ação Correta</th>{% endif %}
+                            {% if 'respons' in dados[0] %}<th>Responsável</th>{% endif %}
+                            {% if 'obs' in dados[0] %}<th>Observações</th>{% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dado in dados %}
+                        <tr>
+                            {% if 'nproduto' in dado %}<td>{{ dado.nproduto }}</td>{% endif %}
+                            {% if 'peso' in dado %}<td>{{ dado.peso }}</td>{% endif %}
+                            {% if 'datai' in dado %}<td>{{ dado.datai }}</td>{% endif %}
+                            {% if 'horai' in dado %}<td>{{ dado.horai }}</td>{% endif %}
+                            {% if 'dataf' in dado %}<td>{{ dado.dataf }}</td>{% endif %}
+                            {% if 'horaf' in dado %}<td>{{ dado.horaf }}</td>{% endif %}
+                            {% if 'marcha' in dado %}<td>{{ dado.marcha }}</td>{% endif %}
+                            {% if 'defprod' in dado %}<td>{{ dado.defprod }}</td>{% endif %}
+                            {% if 'motivo' in dado %}<td>{{ dado.motivo }}</td>{% endif %}
+                            {% if 'acaocorre' in dado %}<td>{{ dado.acaocorre }}</td>{% endif %}
+                            {% if 'respons' in dado %}<td>{{ dado.respons }}</td>{% endif %}
+                            {% if 'obs' in dado %}<td>{{ dado.obs }}</td>{% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
             <p>Nenhum dado encontrado.</p>
         {% endif %}

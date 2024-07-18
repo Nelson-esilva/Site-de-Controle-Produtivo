@@ -1,0 +1,75 @@
+/* Estilos para a tabela */
+.style-tabela table {
+    float: left;
+    border: 1px solid #ccc;
+    border-bottom: 0;
+    border-right: 0;
+    font-size: 0.8em;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.style-tabela table th, .style-tabela table td {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+}
+
+.style-tabela table th {
+    background-color: #00bcc4;
+    color: #fff;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.style-tabela table tbody tr {
+    background-color: #fff;
+    color: #666;
+}
+
+.style-tabela table tbody tr:hover {
+    background-color: #f4f4f4;
+    color: #00bcc4;
+}
+
+.style-tabela table td a.editar {
+    color: #00d549;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.style-tabela table td a.deletar {
+    color: #bf303c;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.style-tabela table tbody tr.mensagemAlerta {
+    background-color: #fdeeef;
+    color: #bf303c;
+}
+
+/* Estilos gerais */
+.container {
+    padding: 20px;
+}
+
+form label, form select, form input, form button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+form input[type="checkbox"] {
+    display: inline;
+}
+
+nav {
+    margin-top: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #00bcc4;
+    font-weight: bold;
+}
