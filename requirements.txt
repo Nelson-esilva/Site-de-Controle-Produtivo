@@ -1,4 +1,7 @@
 Flask
+Flask-SQLAlchemy==3.0.4
 Flask-Login
-Flask-SQLAlchemy
-
+pandas
+plotly
+SQLAlchemy
+gunicorn
