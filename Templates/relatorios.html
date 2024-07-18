@@ -3,38 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='relatorio.css') }}">
     <title>Relatórios</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Relatórios</h1>
-        <form method="post">
-            <div class="form-group">
-                <label for="colunas">Selecione as colunas:</label>
-                <select name="colunas" id="colunas" multiple>
-                    {% for coluna in colunas %}
-                        <option value="{{ coluna }}" {% if coluna in selected_columns %}selected{% endif %}>{{ coluna }}</option>
-                    {% endfor %}
-                </select>
+    <div class="container mt-5">
+        <header class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Relatórios</h1>
+            <a href="{{ url_for('profile') }}" class="btn btn-primary">Voltar</a>
+        </header>
+        
+        <section class="filter-section mb-4">
+            <form method="post" class="p-4 border rounded bg-light shadow-sm">
+                <div class="form-group">
+                    <label for="colunas">Selecione as colunas:</label>
+                    <select name="colunas" id="colunas" multiple class="form-control">
+                        {% for coluna in colunas %}
+                            <option value="{{ coluna }}" {% if coluna in selected_columns %}selected{% endif %}>{{ coluna }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tipo_grafico">Tipo de Gráfico:</label>
+                    <select name="tipo_grafico" id="tipo_grafico" class="form-control">
+                        <option value="bar" {% if graph_type == 'bar' %}selected{% endif %}>Barras</option>
+                        <option value="line" {% if graph_type == 'line' %}selected{% endif %}>Tendência</option>
+                        <option value="pie" {% if graph_type == 'pie' %}selected{% endif %}>Pizza</option>
+                        <option value="scatter" {% if graph_type == 'scatter' %}selected{% endif %}>Dispersão</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Gerar Gráfico</button>
+            </form>
+        </section>
+        
+        <section class="graph-section mt-4">
+            <div class="graph-container">
+                {{ graph_html|safe }}
             </div>
-            <div class="form-group">
-                <label for="tipo_grafico">Tipo de Gráfico:</label>
-                <select name="tipo_grafico" id="tipo_grafico">
-                    <option value="bar" {% if graph_type == 'bar' %}selected{% endif %}>Barras</option>
-                    <option value="line" {% if graph_type == 'line' %}selected{% endif %}>Tendência</option>
-                    <option value="pie" {% if graph_type == 'pie' %}selected{% endif %}>Pizza</option>
-                    <option value="scatter" {% if graph_type == 'scatter' %}selected{% endif %}>Dispersão</option>
-                </select>
-            </div>
-            <button type="submit">Gerar Gráfico</button>
-        </form>
-        <div class="graph">
-            {{ graph_html|safe }}
-        </div>
-        <nav>
-            <a href="{{ url_for('profile') }}">Voltar</a>
-        </nav>
+        </section>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -3,28 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='incluir.css') }}">
     <title>Incluir Dados</title>
 </head>
 <body>
-    <h1>Incluir Dados</h1>
-    <form method="POST" action="{{ url_for('incluir_dados') }}">
-        <input type="text" name="nproduto" placeholder="Produto" required>
-        <input type="text" name="peso" placeholder="Peso" required>
-        <input type="date" name="datai" required>
-        <input type="time" name="horai" required>
-        <input type="date" name="dataf" required>
-        <input type="time" name="horaf" required>
-        <input type="checkbox" name="marcha" value="True"> Marcha
-        <input type="text" name="defprod" placeholder="Definição do Produto" required>
-        <input type="text" name="motivo" placeholder="Motivo" required>
-        <input type="text" name="acaocorre" placeholder="Ação Corretiva" required>
-        <input type="text" name="respons" placeholder="Responsável" required>
-        <textarea name="obs" placeholder="Observações"></textarea>
-        <button type="submit">Salvar</button>
-    </form>
-    <nav>
-        <a href="{{ url_for('profile') }}">Voltar</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="#">Fábrica de Plásticos</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <!-- Adicione mais itens de navegação se necessário -->
+            </ul>
+            <span class="navbar-text">
+                <a href="{{ url_for('profile') }}" class="btn btn-primary">Voltar</a>
+            </span>
+        </div>
     </nav>
+
+    <div class="container mt-5 pt-5">
+        <h1 class="mb-4">Incluir Dados</h1>
+        <form method="POST" action="{{ url_for('incluir_dados') }}">
+            <div class="form-group">
+                <label for="nproduto">Produto:</label>
+                <input type="text" name="nproduto" id="nproduto" class="form-control" placeholder="Produto" required>
+            </div>
+            <div class="form-group">
+                <label for="peso">Peso:</label>
+                <input type="text" name="peso" id="peso" class="form-control" placeholder="Peso" required>
+            </div>
+            <div class="form-group">
+                <label for="datai">Data Início:</label>
+                <input type="date" name="datai" id="datai" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="horai">Hora Início:</label>
+                <input type="time" name="horai" id="horai" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="dataf">Data Fim:</label>
+                <input type="date" name="dataf" id="dataf" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="horaf">Hora Fim:</label>
+                <input type="time" name="horaf" id="horaf" class="form-control" required>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" name="marcha" id="marcha" class="form-check-input" value="True">
+                <label for="marcha" class="form-check-label">Marcha</label>
+            </div>
+            <div class="form-group">
+                <label for="defprod">Definição do Produto:</label>
+                <input type="text" name="defprod" id="defprod" class="form-control" placeholder="Definição do Produto" required>
+            </div>
+            <div class="form-group">
+                <label for="motivo">Motivo:</label>
+                <input type="text" name="motivo" id="motivo" class="form-control" placeholder="Motivo" required>
+            </div>
+            <div class="form-group">
+                <label for="acaocorre">Ação Corretiva:</label>
+                <input type="text" name="acaocorre" id="acaocorre" class="form-control" placeholder="Ação Corretiva" required>
+            </div>
+            <div class="form-group">
+                <label for="respons">Responsável:</label>
+                <input type="text" name="respons" id="respons" class="form-control" placeholder="Responsável" required>
+            </div>
+            <div class="form-group">
+                <label for="obs">Observações:</label>
+                <textarea name="obs" id="obs" class="form-control" placeholder="Observações"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Salvar</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

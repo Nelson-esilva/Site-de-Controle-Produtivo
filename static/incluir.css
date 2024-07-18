@@ -1,0 +1,36 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.form-control {
+    margin-bottom: 10px;
+}
+
+textarea.form-control {
+    height: 100px;
+}
+
+.btn-primary {
+    margin-top: 10px;
+}
+
+.btn-success {
+    margin-top: 10px;
+}
+
+.navbar-text {
+    margin-left: auto;
+}

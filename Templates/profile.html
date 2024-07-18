@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
     <title>Perfil</title>
 </head>
 <body>
-    <h1>Perfil do Usuário</h1>
-    <nav>
-        <a href="{{ url_for('relatorios') }}">Relatórios</a>
-        <a href="{{ url_for('ocorrencias') }}">Ocorrências</a>
-        <a href="{{ url_for('consultar_dados') }}">Consultar Dados</a>
-        <a href="{{ url_for('incluir_dados') }}">Incluir Dados</a>
-        <a href="{{ url_for('login') }}">Logout</a>
-    </nav>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo Empresa">
+            </div>
+            <nav class="nav-menu">
+                <a href="{{ url_for('relatorios') }}" class="nav-link">Relatórios</a>
+                <a href="{{ url_for('ocorrencias') }}" class="nav-link">Ocorrências</a>
+                <a href="{{ url_for('consultar_dados') }}" class="nav-link">Consultar Dados</a>
+                <a href="{{ url_for('incluir_dados') }}" class="nav-link">Incluir Dados</a>
+                <a href="{{ url_for('login') }}" class="nav-link logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="profile-container">
+            <h1>Pagina Inicial</h1>
+        </div>
+    </main>
 </body>
 </html>

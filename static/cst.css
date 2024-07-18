@@ -1,75 +1,43 @@
-/* Estilos para a tabela */
-.style-tabela table {
-    float: left;
-    border: 1px solid #ccc;
-    border-bottom: 0;
-    border-right: 0;
-    font-size: 0.8em;
-    width: 100%;
-    border-collapse: collapse;
+/* Estilos personalizados para o template */
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
 }
 
-.style-tabela table th, .style-tabela table td {
-    padding: 0.5em;
-    border: 1px solid #ccc;
+header {
+    margin-bottom: 30px;
 }
 
-.style-tabela table th {
-    background-color: #00bcc4;
-    color: #fff;
-    font-size: 1.2em;
-    text-align: center;
+.btn-primary {
+    background-color: #007bff;
+    border: none;
 }
 
-.style-tabela table tbody tr {
-    background-color: #fff;
-    color: #666;
+.btn-primary:hover {
+    background-color: #0056b3;
 }
 
-.style-tabela table tbody tr:hover {
-    background-color: #f4f4f4;
-    color: #00bcc4;
+.table thead th {
+    background-color: #343a40;
+    color: white;
 }
 
-.style-tabela table td a.editar {
-    color: #00d549;
-    font-size: 1.2em;
-    font-weight: bold;
-    text-decoration: none;
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2;
 }
 
-.style-tabela table td a.deletar {
-    color: #bf303c;
-    font-size: 1.2em;
-    font-weight: bold;
-    text-decoration: none;
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
 }
 
-.style-tabela table tbody tr.mensagemAlerta {
-    background-color: #fdeeef;
-    color: #bf303c;
+.filter-section {
+    margin-bottom: 20px;
 }
 
-/* Estilos gerais */
-.container {
+.filter-section form {
+    background-color: #ffffff;
+    border-radius: 8px;
     padding: 20px;
-}
-
-form label, form select, form input, form button {
-    display: block;
-    margin-bottom: 10px;
-}
-
-form input[type="checkbox"] {
-    display: inline;
-}
-
-nav {
-    margin-top: 20px;
-}
-
-nav a {
-    text-decoration: none;
-    color: #00bcc4;
-    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

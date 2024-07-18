@@ -3,110 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='cst.css') }}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <title>Consultar Dados</title>
+    <title>Relatórios de Produção</title>
+    <style>
+        /* Adiciona um estilo para o botão de minimizar/maximizar */
+        .toggle-button {
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+        .filter-section.collapsed .filter-content {
+            display: none;
+        }
+        .filter-section.collapsed .toggle-button {
+            transform: rotate(-180deg);
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Consultar Dados</h1>
-        <form method="POST">
-            <label for="filtro">Filtro:</label>
-            <select name="filtro" id="filtro">
-                <option value="diaria">Diária</option>
-                <option value="mensal">Mensal</option>
-                <option value="intervalo">Intervalo de Tempo</option>
-                <option value="todo">Todo o Período</option>
-            </select>
-
-            <div id="dataDiaria" style="display: none;">
-                <label for="data_diaria">Escolha o Dia:</label>
-                <input type="date" name="data_diaria" id="data_diaria">
+    <div class="container mt-5">
+        <header class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Relatórios de Produção</h1>
+            <a href="{{ url_for('profile') }}" class="btn btn-primary">Voltar</a>
+        </header>
+        
+        <section class="filter-section mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="mb-0">Filtros</h2>
+                <span class="toggle-button">
+                    <i class="fas fa-chevron-down"></i>
+                </span>
             </div>
+            <div class="filter-content">
+                <form method="POST" class="p-4 border rounded bg-light shadow-sm">
+                    <div class="form-group">
+                        <label for="filtro">Filtro:</label>
+                        <select name="filtro" id="filtro" class="form-control">
+                            <option value="diaria">Diária</option>
+                            <option value="mensal">Mensal</option>
+                            <option value="intervalo">Intervalo de Tempo</option>
+                            <option value="todo">Todo o Período</option>
+                        </select>
+                    </div>
 
-            <div id="dataMensal" style="display: none;">
-                <label for="data_mensal">Escolha o Mês e Ano:</label>
-                <input type="month" name="data_mensal" id="data_mensal">
+                    <div id="dataDiaria" class="date-filter" style="display: none;">
+                        <div class="form-group">
+                            <label for="data_diaria">Escolha o Dia:</label>
+                            <input type="date" name="data_diaria" id="data_diaria" class="form-control">
+                        </div>
+                    </div>
+
+                    <div id="dataMensal" class="date-filter" style="display: none;">
+                        <div class="form-group">
+                            <label for="data_mensal">Escolha o Mês e Ano:</label>
+                            <input type="month" name="data_mensal" id="data_mensal" class="form-control">
+                        </div>
+                    </div>
+
+                    <div id="intervalo" class="date-filter" style="display: none;">
+                        <div class="form-group">
+                            <label for="data_inicio">Data Início:</label>
+                            <input type="date" name="data_inicio" id="data_inicio" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="data_fim">Data Fim:</label>
+                            <input type="date" name="data_fim" id="data_fim" class="form-control">
+                        </div>
+                    </div>
+
+                    <fieldset class="mb-4">
+                        <legend>Colunas a Exibir:</legend>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="nproduto" checked class="form-check-input" id="col_nproduto">
+                            <label for="col_nproduto" class="form-check-label">Nome do Produto</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="peso" checked class="form-check-input" id="col_peso">
+                            <label for="col_peso" class="form-check-label">Peso</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="datai" checked class="form-check-input" id="col_datai">
+                            <label for="col_datai" class="form-check-label">Data Início</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="horai" checked class="form-check-input" id="col_horai">
+                            <label for="col_horai" class="form-check-label">Hora Início</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="dataf" checked class="form-check-input" id="col_dataf">
+                            <label for="col_dataf" class="form-check-label">Data Fim</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="horaf" checked class="form-check-input" id="col_horaf">
+                            <label for="col_horaf" class="form-check-label">Hora Fim</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="marcha" checked class="form-check-input" id="col_marcha">
+                            <label for="col_marcha" class="form-check-label">Marcha</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="defprod" checked class="form-check-input" id="col_defprod">
+                            <label for="col_defprod" class="form-check-label">Def. Produto</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="motivo" checked class="form-check-input" id="col_motivo">
+                            <label for="col_motivo" class="form-check-label">Motivo</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="acaocorre" checked class="form-check-input" id="col_acaocorre">
+                            <label for="col_acaocorre" class="form-check-label">Ação Correta</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="respons" checked class="form-check-input" id="col_respons">
+                            <label for="col_respons" class="form-check-label">Responsável</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="colunas" value="obs" checked class="form-check-input" id="col_obs">
+                            <label for="col_obs" class="form-check-label">Observações</label>
+                        </div>
+                    </fieldset>
+
+                    <button type="submit" class="btn btn-success">Pesquisar</button>
+                </form>
             </div>
+        </section>
 
-            <div id="intervalo" style="display: none;">
-                <label for="data_inicio">Data Início:</label>
-                <input type="date" name="data_inicio" id="data_inicio">
-                <label for="data_fim">Data Fim:</label>
-                <input type="date" name="data_fim" id="data_fim">
-            </div>
-
-            <label>Colunas a Exibir:</label>
-            <input type="checkbox" name="colunas" value="nproduto" checked> Nome do Produto<br>
-            <input type="checkbox" name="colunas" value="peso" checked> Peso<br>
-            <input type="checkbox" name="colunas" value="datai" checked> Data Início<br>
-            <input type="checkbox" name="colunas" value="horai" checked> Hora Início<br>
-            <input type="checkbox" name="colunas" value="dataf" checked> Data Fim<br>
-            <input type="checkbox" name="colunas" value="horaf" checked> Hora Fim<br>
-            <input type="checkbox" name="colunas" value="marcha" checked> Marcha<br>
-            <input type="checkbox" name="colunas" value="defprod" checked> Def. Produto<br>
-            <input type="checkbox" name="colunas" value="motivo" checked> Motivo<br>
-            <input type="checkbox" name="colunas" value="acaocorre" checked> Ação Correta<br>
-            <input type="checkbox" name="colunas" value="respons" checked> Responsável<br>
-            <input type="checkbox" name="colunas" value="obs" checked> Observações<br>
-
-            <button type="submit">Pesquisar</button>
-        </form>
-
-        {% if dados %}
-            <div class="style-tabela">
-                <table>
-                    <thead>
-                        <tr>
-                            {% if 'nproduto' in dados[0] %}<th>Nome do Produto</th>{% endif %}
-                            {% if 'peso' in dados[0] %}<th>Peso</th>{% endif %}
-                            {% if 'datai' in dados[0] %}<th>Data Início</th>{% endif %}
-                            {% if 'horai' in dados[0] %}<th>Hora Início</th>{% endif %}
-                            {% if 'dataf' in dados[0] %}<th>Data Fim</th>{% endif %}
-                            {% if 'horaf' in dados[0] %}<th>Hora Fim</th>{% endif %}
-                            {% if 'marcha' in dados[0] %}<th>Marcha</th>{% endif %}
-                            {% if 'defprod' in dados[0] %}<th>Def. Produto</th>{% endif %}
-                            {% if 'motivo' in dados[0] %}<th>Motivo</th>{% endif %}
-                            {% if 'acaocorre' in dados[0] %}<th>Ação Correta</th>{% endif %}
-                            {% if 'respons' in dados[0] %}<th>Responsável</th>{% endif %}
-                            {% if 'obs' in dados[0] %}<th>Observações</th>{% endif %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for dado in dados %}
-                        <tr>
-                            {% if 'nproduto' in dado %}<td>{{ dado.nproduto }}</td>{% endif %}
-                            {% if 'peso' in dado %}<td>{{ dado.peso }}</td>{% endif %}
-                            {% if 'datai' in dado %}<td>{{ dado.datai }}</td>{% endif %}
-                            {% if 'horai' in dado %}<td>{{ dado.horai }}</td>{% endif %}
-                            {% if 'dataf' in dado %}<td>{{ dado.dataf }}</td>{% endif %}
-                            {% if 'horaf' in dado %}<td>{{ dado.horaf }}</td>{% endif %}
-                            {% if 'marcha' in dado %}<td>{{ dado.marcha }}</td>{% endif %}
-                            {% if 'defprod' in dado %}<td>{{ dado.defprod }}</td>{% endif %}
-                            {% if 'motivo' in dado %}<td>{{ dado.motivo }}</td>{% endif %}
-                            {% if 'acaocorre' in dado %}<td>{{ dado.acaocorre }}</td>{% endif %}
-                            {% if 'respons' in dado %}<td>{{ dado.respons }}</td>{% endif %}
-                            {% if 'obs' in dado %}<td>{{ dado.obs }}</td>{% endif %}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p>Nenhum dado encontrado.</p>
-        {% endif %}
+        <section class="results-section">
+            {% if dados %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                {% if 'nproduto' in dados[0] %}<th>Nome do Produto</th>{% endif %}
+                                {% if 'peso' in dados[0] %}<th>Peso</th>{% endif %}
+                                {% if 'datai' in dados[0] %}<th>Data Início</th>{% endif %}
+                                {% if 'horai' in dados[0] %}<th>Hora Início</th>{% endif %}
+                                {% if 'dataf' in dados[0] %}<th>Data Fim</th>{% endif %}
+                                {% if 'horaf' in dados[0] %}<th>Hora Fim</th>{% endif %}
+                                {% if 'marcha' in dados[0] %}<th>Marcha</th>{% endif %}
+                                {% if 'defprod' in dados[0] %}<th>Def. Produto</th>{% endif %}
+                                {% if 'motivo' in dados[0] %}<th>Motivo</th>{% endif %}
+                                {% if 'acaocorre' in dados[0] %}<th>Ação Correta</th>{% endif %}
+                                {% if 'respons' in dados[0] %}<th>Responsável</th>{% endif %}
+                                {% if 'obs' in dados[0] %}<th>Observações</th>{% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dado in dados %}
+                            <tr>
+                                {% if 'nproduto' in dado %}<td>{{ dado.nproduto }}</td>{% endif %}
+                                {% if 'peso' in dado %}<td>{{ dado.peso }}</td>{% endif %}
+                                {% if 'datai' in dado %}<td>{{ dado.datai }}</td>{% endif %}
+                                {% if 'horai' in dado %}<td>{{ dado.horai }}</td>{% endif %}
+                                {% if 'dataf' in dado %}<td>{{ dado.dataf }}</td>{% endif %}
+                                {% if 'horaf' in dado %}<td>{{ dado.horaf }}</td>{% endif %}
+                                {% if 'marcha' in dado %}<td>{{ dado.marcha }}</td>{% endif %}
+                                {% if 'defprod' in dado %}<td>{{ dado.defprod }}</td>{% endif %}
+                                {% if 'motivo' in dado %}<td>{{ dado.motivo }}</td>{% endif %}
+                                {% if 'acaocorre' in dado %}<td>{{ dado.acaocorre }}</td>{% endif %}
+                                {% if 'respons' in dado %}<td>{{ dado.respons }}</td>{% endif %}
+                                {% if 'obs' in dado %}<td>{{ dado.obs }}</td>{% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-warning" role="alert">
+                    Nenhum dado encontrado.
+                </div>
+            {% endif %}
+        </section>
     </div>
-    
-    <nav>
-        <a href="{{ url_for('profile') }}">Voltar</a>
-    </nav>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         document.getElementById('filtro').addEventListener('change', function() {
             var selected = this.value;
             document.getElementById('dataDiaria').style.display = (selected === 'diaria') ? 'block' : 'none';
             document.getElementById('dataMensal').style.display = (selected === 'mensal') ? 'block' : 'none';
             document.getElementById('intervalo').style.display = (selected === 'intervalo') ? 'block' : 'none';
+        });
+
+        // Script para alternar a visibilidade dos filtros
+        document.querySelector('.toggle-button').addEventListener('click', function() {
+            var filterSection = document.querySelector('.filter-section');
+            filterSection.classList.toggle('collapsed');
+            var icon = filterSection.classList.contains('collapsed') ? 'fa-chevron-up' : 'fa-chevron-down';
+            document.querySelector('.toggle-button i').className = 'fas ' + icon;
         });
     </script>
 </body>
