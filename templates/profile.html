@@ -9,9 +9,6 @@
 <body>
     <header>
         <div class="header-container">
-            <div class="logo">
-                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo Empresa">
-            </div>
             <nav class="nav-menu">
                 <a href="{{ url_for('relatorios') }}" class="nav-link">Relatórios</a>
                 <a href="{{ url_for('ocorrencias') }}" class="nav-link">Ocorrências</a>
@@ -24,6 +21,9 @@
     <main>
         <div class="profile-container">
             <h1>Pagina Inicial</h1>
+        </div>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo Empresa">
         </div>
     </main>
 </body>
