@@ -1,32 +1,39 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Define a codificação de caracteres e a viewport para dispositivos móveis -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Importa o CSS do Bootstrap para estilização -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Importa o CSS personalizado para a página de relatórios -->
     <link rel="stylesheet" href="{{ url_for('static', filename='relatorio.css') }}">
     <title>Relatórios</title>
 </head>
 <body>
+    <!-- Barra de navegação fixa no topo -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <a class="navbar-brand" href="#">Fábrica de Plásticos</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
-                <!-- Adicione mais itens de navegação se necessário -->
+                <!-- Espaço para itens de navegação adicionais -->
             </ul>
+            <!-- Botão para retornar à página de perfil -->
             <span class="navbar-text">
                 <a href="{{ url_for('profile') }}" class="btn btn-primary">Voltar</a>
             </span>
         </div>
     </nav>
 
+    <!-- Conteúdo principal da página -->
     <div class="container-fluid mt-5 pt-5">
         <div class="row">
-            <!-- Sidebar -->
+            <!-- Barra lateral (Sidebar) com opções de tipos de gráficos -->
             <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
                 <div class="sidebar-sticky pt-3">
                     <h5>Tipos de Gráficos</h5>
                     <ul class="nav flex-column">
+                        <!-- Links para diferentes tipos de gráficos -->
                         <li class="nav-item">
                             <a class="nav-link" href="#" id="line-chart" data-graph-type="line">Gráfico de Linha</a>
                         </li>
@@ -46,16 +53,17 @@
                 </div>
             </nav>
 
-            <!-- Main Content -->
+            <!-- Seção principal de conteúdo -->
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <header class="d-flex justify-content-between align-items-center mb-4">
                     <h1>Relatórios</h1>
                 </header>
 
-                <!-- Filter Section -->
+                <!-- Seção de filtros -->
                 <section class="filter-section mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h2 class="mb-0">Filtros</h2>
+                        <!-- Botão para ocultar/exibir a seção de filtros -->
                         <span class="toggle-button">
                             <i class="fas fa-chevron-down"></i>
                         </span>
@@ -66,6 +74,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="colunaX">Coluna X:</label>
                                     <select name="colunaX" id="colunaX" class="form-control">
+                                        <!-- Preenche as opções com base nas colunas disponíveis -->
                                         {% for coluna in colunas %}
                                             <option value="{{ coluna }}">{{ coluna }}</option>
                                         {% endfor %}
@@ -74,18 +83,20 @@
                                 <div class="form-group col-md-6">
                                     <label for="colunaY">Coluna Y:</label>
                                     <select name="colunaY" id="colunaY" class="form-control">
+                                        <!-- Preenche as opções com base nas colunas disponíveis -->
                                         {% for coluna in colunas %}
                                             <option value="{{ coluna }}">{{ coluna }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                             </div>
+                            <!-- Botão para confirmar os filtros -->
                             <button type="button" class="btn btn-primary" id="confirm-button">Confirmar</button>
                         </form>
                     </div>
                 </section>
 
-                <!-- Graph Section -->
+                <!-- Seção para exibir o gráfico -->
                 <section class="graph-section mt-4">
                     <div id="graph-container" class="graph-container">
                         <div id="graph"></div>
@@ -95,12 +106,14 @@
         </div>
     </div>
 
+    <!-- Scripts necessários para a funcionalidade da página -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script>
         $(document).ready(function () {
+            // Função para buscar dados do gráfico e renderizar com Plotly
             function fetchGraphData(graphType, colunaX, colunaY) {
                 $.ajax({
                     url: "{{ url_for('get_graph_data') }}",
@@ -117,13 +130,13 @@
                 });
             }
 
-            // Initial graph load
-            const initialGraphType = 'bar';
+            // Carrega o gráfico inicial
+            const initialGraphType = 'bar'; // Tipo de gráfico padrão
             const initialColunaX = $('#colunaX').val();
             const initialColunaY = $('#colunaY').val();
             fetchGraphData(initialGraphType, initialColunaX, initialColunaY);
 
-            // Handle sidebar link clicks
+            // Manipula cliques nos links da sidebar para atualizar o gráfico
             $('.sidebar .nav-link').click(function (e) {
                 e.preventDefault();
                 $('.sidebar .nav-link').removeClass('active');
@@ -134,7 +147,7 @@
                 fetchGraphData(graphType, colunaX, colunaY);
             });
 
-            // Handle confirm button click
+            // Manipula clique no botão de confirmar para atualizar o gráfico com filtros selecionados
             $('#confirm-button').click(function () {
                 const activeGraphType = $('.sidebar .nav-link.active').data('graph-type');
                 const colunaX = $('#colunaX').val();
@@ -142,7 +155,7 @@
                 fetchGraphData(activeGraphType, colunaX, colunaY);
             });
 
-            // Toggle filter section
+            // Alterna a visibilidade da seção de filtros
             $('.toggle-button').click(function () {
                 var filterSection = $('.filter-section');
                 filterSection.toggleClass('collapsed');

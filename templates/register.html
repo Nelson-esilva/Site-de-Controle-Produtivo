@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Define a codificação de caracteres como UTF-8 -->
     <meta charset="UTF-8">
+    <!-- Define a viewport para tornar a página responsiva em dispositivos móveis -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Define o título da página que aparece na aba do navegador -->
     <title>Register</title>
+    <!-- Importa o CSS personalizado para a página -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <!-- Cabeçalho da página -->
     <h1>Register</h1>
+    <!-- Formulário de registro -->
     <form method="POST" action="{{ url_for('register') }}">
+        <!-- Campo para o nome de usuário -->
         <label for="username">Username:</label>
         <input type="text" name="username" required>
+        
+        <!-- Campo para a senha -->
         <label for="password">Password:</label>
         <input type="password" name="password" required>
+        
+        <!-- Campo para a matrícula -->
         <label for="matricula">Matricula:</label>
         <input type="text" name="matricula" required>
+        
+        <!-- Botão para enviar o formulário -->
         <button type="submit">Register</button>
     </form>
+    <!-- Link para retornar à página de perfil -->
     <a href="{{ url_for('profile') }}">Voltar</a>
 </body>
 </html>

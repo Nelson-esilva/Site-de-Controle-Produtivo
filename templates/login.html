@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Define a codificação de caracteres como UTF-8 -->
     <meta charset="UTF-8">
+    <!-- Define a viewport para tornar a página responsiva em dispositivos móveis -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Importa o CSS personalizado para a página de login -->
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <!-- Define o título da página que aparece na aba do navegador -->
     <title>Login</title>
 </head>
 <body>
+    <!-- Contêiner principal para o formulário de login -->
     <div class="login-container">
+        <!-- Título principal da página -->
         <h1>Login</h1>
+        <!-- Formulário de login -->
         <form method="POST" action="{{ url_for('login') }}">
+            <!-- Campo para o nome de usuário -->
             <div class="form-group">
                 <input type="text" name="username" placeholder="Usuário" required>
             </div>
+            <!-- Campo para a senha -->
             <div class="form-group">
                 <input type="password" name="password" placeholder="Senha" required>
             </div>
+            <!-- Botão para enviar o formulário -->
             <button type="submit" class="btn-submit">Entrar</button>
         </form>
+        <!-- Links de navegação para outras páginas -->
         <div class="links">
+            <!-- Link para a página de registro -->
             <a href="{{ url_for('register') }}" class="btn-register">Cadastrar</a>
         </div>
     </div>

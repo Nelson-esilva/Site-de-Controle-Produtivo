@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Define a codificação de caracteres como UTF-8 -->
     <meta charset="UTF-8">
+    <!-- Define a viewport para tornar a página responsiva em dispositivos móveis -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Importa o CSS do Bootstrap para estilização -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Importa o CSS personalizado para a página de inclusão de dados -->
     <link rel="stylesheet" href="{{ url_for('static', filename='incluir.css') }}">
+    <!-- Define o título da página que aparece na aba do navegador -->
     <title>Incluir Dados</title>
 </head>
 <body>
+    <!-- Barra de navegação fixa no topo da página -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <a class="navbar-brand" href="#">Fábrica de Plásticos</a>
         <div class="collapse navbar-collapse">
@@ -15,69 +21,85 @@
                 <!-- Adicione mais itens de navegação se necessário -->
             </ul>
             <span class="navbar-text">
+                <!-- Botão de retorno para a página de perfil -->
                 <a href="{{ url_for('profile') }}" class="btn btn-primary">Voltar</a>
             </span>
         </div>
     </nav>
 
+    <!-- Container principal para o formulário de inclusão de dados -->
     <div class="container mt-5 pt-5">
         <h1 class="mb-4">Incluir Dados</h1>
+        <!-- Formulário para inclusão de dados -->
         <form method="POST" action="{{ url_for('incluir_dados') }}">
+            <!-- Campo para nome do produto -->
             <div class="form-group">
                 <label for="nproduto">Produto:</label>
                 <input type="text" name="nproduto" id="nproduto" class="form-control" placeholder="Produto" required>
             </div>
+            <!-- Campo para peso do produto -->
             <div class="form-group">
                 <label for="peso">Peso:</label>
                 <input type="text" name="peso" id="peso" class="form-control" placeholder="Peso" required>
             </div>
+            <!-- Campo para data de início -->
             <div class="form-group">
                 <label for="datai">Data Início:</label>
                 <input type="date" name="datai" id="datai" class="form-control" required>
             </div>
+            <!-- Campo para hora de início -->
             <div class="form-group">
                 <label for="horai">Hora Início:</label>
                 <input type="time" name="horai" id="horai" class="form-control" required>
             </div>
+            <!-- Campo para data de fim -->
             <div class="form-group">
                 <label for="dataf">Data Fim:</label>
                 <input type="date" name="dataf" id="dataf" class="form-control" required>
             </div>
+            <!-- Campo para hora de fim -->
             <div class="form-group">
                 <label for="horaf">Hora Fim:</label>
                 <input type="time" name="horaf" id="horaf" class="form-control" required>
             </div>
+            <!-- Checkbox para marcar "Marcha" -->
             <div class="form-group form-check">
                 <input type="checkbox" name="marcha" id="marcha" class="form-check-input" value="True">
                 <label for="marcha" class="form-check-label">Marcha</label>
             </div>
+            <!-- Campo para definição do produto -->
             <div class="form-group">
                 <label for="defprod">Definição do Produto:</label>
                 <input type="text" name="defprod" id="defprod" class="form-control" placeholder="Definição do Produto" required>
             </div>
+            <!-- Campo para motivo -->
             <div class="form-group">
                 <label for="motivo">Motivo:</label>
                 <input type="text" name="motivo" id="motivo" class="form-control" placeholder="Motivo" required>
             </div>
+            <!-- Campo para ação corretiva -->
             <div class="form-group">
                 <label for="acaocorre">Ação Corretiva:</label>
                 <input type="text" name="acaocorre" id="acaocorre" class="form-control" placeholder="Ação Corretiva" required>
             </div>
+            <!-- Campo para responsável -->
             <div class="form-group">
                 <label for="respons">Responsável:</label>
                 <input type="text" name="respons" id="respons" class="form-control" placeholder="Responsável" required>
             </div>
+            <!-- Campo para observações -->
             <div class="form-group">
                 <label for="obs">Observações:</label>
                 <textarea name="obs" id="obs" class="form-control" placeholder="Observações"></textarea>
             </div>
+            <!-- Botão para enviar o formulário -->
             <button type="submit" class="btn btn-success">Salvar</button>
         </form>
     </div>
 
+    <!-- Scripts necessários para o funcionamento do Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-

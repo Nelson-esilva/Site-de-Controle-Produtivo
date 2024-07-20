@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Define a codificação de caracteres como UTF-8 -->
     <meta charset="UTF-8">
+    <!-- Define a viewport para tornar a página responsiva em dispositivos móveis -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Define o título da página que aparece na aba do navegador -->
     <title>Ocorrências</title>
+    <!-- Importa o CSS personalizado para a página -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <!-- Título principal da página -->
     <h1>Ocorrências</h1>
+    <!-- Link para retornar à página de perfil -->
     <a href="{{ url_for('profile') }}">Voltar</a>
+    <!-- Texto descritivo sobre a página -->
     <p>Aqui você pode visualizar ocorrências registradas.</p>
+    <!-- Espaço reservado para implementar a visualização de ocorrências -->
     <!-- Implementar visualização de ocorrências aqui -->
 </body>
 </html>

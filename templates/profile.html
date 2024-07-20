@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Define a codificação de caracteres para UTF-8 -->
     <meta charset="UTF-8">
+    <!-- Define a viewport para tornar a página responsiva em dispositivos móveis -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Importa o CSS personalizado para a página de perfil -->
     <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+    <!-- Define o título da página que aparece na aba do navegador -->
     <title>Perfil</title>
 </head>
 <body>
+    <!-- Cabeçalho da página -->
     <header>
         <div class="header-container">
+            <!-- Menu de navegação -->
             <nav class="nav-menu">
+                <!-- Links para diferentes seções do site -->
                 <a href="{{ url_for('relatorios') }}" class="nav-link">Relatórios</a>
                 <a href="{{ url_for('ocorrencias') }}" class="nav-link">Ocorrências</a>
                 <a href="{{ url_for('consultar_dados') }}" class="nav-link">Consultar Dados</a>
                 <a href="{{ url_for('incluir_dados') }}" class="nav-link">Incluir Dados</a>
+                <!-- Link para logout -->
                 <a href="{{ url_for('login') }}" class="nav-link logout">Logout</a>
             </nav>
         </div>
     </header>
+    <!-- Conteúdo principal da página -->
     <main>
         <div class="profile-container">
+            <!-- Título principal da página -->
             <h1>Pagina Inicial</h1>
         </div>
+        <!-- Seção para exibir o logo da empresa -->
         <div class="logo">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo Empresa">
         </div>
