@@ -236,11 +236,44 @@ def incluir_dados():
     
     return render_template('incluir_dados.html')  # Renderiza a página para inclusão de dados
 
-# Rota para a página de ocorrências (não definida detalhadamente)
-@app.route('/ocorrencias')
-@login_required
+# Dados de exemplo para demonstração
+dados_exemplo = [
+    {
+        "id": 1,
+        "data_inicio": "2024-07-20",
+        "marcha": "3",
+        "def_produto": "Produto A",
+        "motivo": "Falha técnica",
+        "acao_correta": "Reparo",
+        "responsavel": "João",
+        "observacoes": "Troca de peça"
+    },
+    # Outros dados...
+]
+
+@app.route('/ocorrencias', methods=['GET', 'POST'])
 def ocorrencias():
-    return render_template('ocorrencias.html')  # Renderiza a página de ocorrências
+    if request.method == 'POST':
+        filtro = request.form.get('filtro')
+        data_diaria = request.form.get('data_diaria')
+        # Lógica para filtrar os dados com base no filtro selecionado...
+        dados = dados_exemplo  # Usando dados de exemplo
+        return render_template('ocorrencias.html', dados=dados)
+    return render_template('ocorrencias.html', dados=[])
+
+@app.route('/editar_ocorrencia/<int:id>', methods=['POST'])
+def editar_ocorrencia(id):
+    for dado in dados_exemplo:
+        if dado['id'] == id:
+            dado['data_inicio'] = request.form.get('data_inicio')
+            dado['marcha'] = request.form.get('marcha')
+            dado['def_produto'] = request.form.get('def_produto')
+            dado['motivo'] = request.form.get('motivo')
+            dado['acao_correta'] = request.form.get('acao_correta')
+            dado['responsavel'] = request.form.get('responsavel')
+            dado['observacoes'] = request.form.get('observacoes')
+            break
+    return redirect(url_for('ocorrencias'))
 
 # Executa a aplicação Flask em modo de depuração
 if __name__ == '__main__':
