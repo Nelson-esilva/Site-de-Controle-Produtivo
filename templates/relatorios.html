@@ -4,49 +4,152 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='relatorio.css') }}">
     <title>Relatórios</title>
 </head>
 <body>
-    <div class="container mt-5">
-        <header class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Relatórios</h1>
-            <a href="{{ url_for('profile') }}" class="btn btn-primary">Voltar</a>
-        </header>
-        
-        <section class="filter-section mb-4">
-            <form method="post" class="p-4 border rounded bg-light shadow-sm">
-                <div class="form-group">
-                    <label for="colunas">Selecione as colunas:</label>
-                    <select name="colunas" id="colunas" multiple class="form-control">
-                        {% for coluna in colunas %}
-                            <option value="{{ coluna }}" {% if coluna in selected_columns %}selected{% endif %}>{{ coluna }}</option>
-                        {% endfor %}
-                    </select>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="#">Fábrica de Plásticos</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <!-- Adicione mais itens de navegação se necessário -->
+            </ul>
+            <span class="navbar-text">
+                <a href="{{ url_for('profile') }}" class="btn btn-primary">Voltar</a>
+            </span>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-5 pt-5">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="sidebar-sticky pt-3">
+                    <h5>Tipos de Gráficos</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="line-chart" data-graph-type="line">Gráfico de Linha</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="bar-chart" data-graph-type="bar">Gráfico de Barra</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="pie-chart" data-graph-type="pie">Gráfico de Pizza</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="scatter-chart" data-graph-type="scatter">Gráfico de Dispersão</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="area-chart" data-graph-type="area">Gráfico de Área</a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="form-group">
-                    <label for="tipo_grafico">Tipo de Gráfico:</label>
-                    <select name="tipo_grafico" id="tipo_grafico" class="form-control">
-                        <option value="bar" {% if graph_type == 'bar' %}selected{% endif %}>Barras</option>
-                        <option value="line" {% if graph_type == 'line' %}selected{% endif %}>Tendência</option>
-                        <option value="pie" {% if graph_type == 'pie' %}selected{% endif %}>Pizza</option>
-                        <option value="scatter" {% if graph_type == 'scatter' %}selected{% endif %}>Dispersão</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-success">Gerar Gráfico</button>
-            </form>
-        </section>
-        
-        <section class="graph-section mt-4">
-            <div class="graph-container">
-                {{ graph_html|safe }}
-            </div>
-        </section>
+            </nav>
+
+            <!-- Main Content -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <header class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>Relatórios</h1>
+                </header>
+
+                <!-- Filter Section -->
+                <section class="filter-section mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h2 class="mb-0">Filtros</h2>
+                        <span class="toggle-button">
+                            <i class="fas fa-chevron-down"></i>
+                        </span>
+                    </div>
+                    <div class="filter-content">
+                        <form id="filter-form" class="p-4 border rounded bg-light shadow-sm">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="colunaX">Coluna X:</label>
+                                    <select name="colunaX" id="colunaX" class="form-control">
+                                        {% for coluna in colunas %}
+                                            <option value="{{ coluna }}">{{ coluna }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="colunaY">Coluna Y:</label>
+                                    <select name="colunaY" id="colunaY" class="form-control">
+                                        {% for coluna in colunas %}
+                                            <option value="{{ coluna }}">{{ coluna }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="confirm-button">Confirmar</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Graph Section -->
+                <section class="graph-section mt-4">
+                    <div id="graph-container" class="graph-container">
+                        <div id="graph"></div>
+                    </div>
+                </section>
+            </main>
+        </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function fetchGraphData(graphType, colunaX, colunaY) {
+                $.ajax({
+                    url: "{{ url_for('get_graph_data') }}",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        graph_type: graphType,
+                        coluna_x: colunaX,
+                        coluna_y: colunaY
+                    }),
+                    success: function (data) {
+                        Plotly.newPlot('graph', data.data, data.layout);
+                    }
+                });
+            }
+
+            // Initial graph load
+            const initialGraphType = 'bar';
+            const initialColunaX = $('#colunaX').val();
+            const initialColunaY = $('#colunaY').val();
+            fetchGraphData(initialGraphType, initialColunaX, initialColunaY);
+
+            // Handle sidebar link clicks
+            $('.sidebar .nav-link').click(function (e) {
+                e.preventDefault();
+                $('.sidebar .nav-link').removeClass('active');
+                $(this).addClass('active');
+                const graphType = $(this).data('graph-type');
+                const colunaX = $('#colunaX').val();
+                const colunaY = $('#colunaY').val();
+                fetchGraphData(graphType, colunaX, colunaY);
+            });
+
+            // Handle confirm button click
+            $('#confirm-button').click(function () {
+                const activeGraphType = $('.sidebar .nav-link.active').data('graph-type');
+                const colunaX = $('#colunaX').val();
+                const colunaY = $('#colunaY').val();
+                fetchGraphData(activeGraphType, colunaX, colunaY);
+            });
+
+            // Toggle filter section
+            $('.toggle-button').click(function () {
+                var filterSection = $('.filter-section');
+                filterSection.toggleClass('collapsed');
+                var iconClass = filterSection.hasClass('collapsed') ? 'fa-chevron-up' : 'fa-chevron-down';
+                $(this).find('i').attr('class', 'fas ' + iconClass);
+            });
+        });
+    </script>
 </body>
 </html>

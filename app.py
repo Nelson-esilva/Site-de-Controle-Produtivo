@@ -86,30 +86,36 @@ def profile():
 @login_required
 def relatorios():
     colunas = [col.name for col in DadosPrograma.__table__.columns]
+    return render_template('relatorios.html', colunas=colunas)
+
+@app.route('/get_graph_data', methods=['POST'])
+@login_required
+def get_graph_data():
+    data = request.json
+    graph_type = data.get('graph_type', 'bar')
+    coluna_x = data.get('coluna_x')
+    coluna_y = data.get('coluna_y')
+
     dados = DadosPrograma.query.all()
     df = pd.DataFrame([(dado.nproduto, dado.peso, dado.datai, dado.horai, dado.dataf, dado.horaf, dado.marcha, dado.defprod, dado.motivo, dado.acaocorre, dado.respons, dado.obs) for dado in dados],
                       columns=['nproduto', 'peso', 'datai', 'horai', 'dataf', 'horaf', 'marcha', 'defprod', 'motivo', 'acaocorre', 'respons', 'obs'])
 
-    graph_html = ""
-    selected_columns = []
-    graph_type = "bar"
+    if not coluna_x or not coluna_y:
+        return jsonify({'data': [], 'layout': {}})
 
-    if request.method == 'POST':
-        selected_columns = request.form.getlist('colunas')
-        graph_type = request.form.get('tipo_grafico')
-        if selected_columns:
-            df = df[selected_columns]
-            if graph_type == 'line':
-                fig = px.line(df, x=selected_columns[0], y=selected_columns[1:])
-            elif graph_type == 'bar':
-                fig = px.bar(df, x=selected_columns[0], y=selected_columns[1:])
-            elif graph_type == 'pie':
-                fig = px.pie(df, names=selected_columns[0], values=selected_columns[1])
-            elif graph_type == 'scatter':
-                fig = px.scatter(df, x=selected_columns[0], y=selected_columns[1])
-            graph_html = pio.to_html(fig, full_html=False)
+    if graph_type == 'line':
+        fig = px.line(df, x=coluna_x, y=coluna_y)
+    elif graph_type == 'bar':
+        fig = px.bar(df, x=coluna_x, y=coluna_y)
+    elif graph_type == 'pie':
+        fig = px.pie(df, names=coluna_x, values=coluna_y)
+    elif graph_type == 'scatter':
+        fig = px.scatter(df, x=coluna_x, y=coluna_y)
+    
+    graph_json = pio.to_json(fig, pretty=True)
+    graph_data = json.loads(graph_json)
 
-    return render_template('relatorios.html', colunas=colunas, graph_html=graph_html, selected_columns=selected_columns, graph_type=graph_type)
+    return jsonify(graph_data)
 
 @app.route('/logout')
 @login_required
