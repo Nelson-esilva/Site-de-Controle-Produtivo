@@ -8,7 +8,7 @@ import plotly.express as px
 import plotly.io as pio
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seu_banco_de_dados.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///novo-_banco_de_dados.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
