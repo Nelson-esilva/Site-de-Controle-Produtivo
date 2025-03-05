@@ -4,6 +4,8 @@
 
 Este projeto consiste em um sistema web desenvolvido para o controle de produção em uma fábrica de plásticos. O objetivo principal é fornecer uma plataforma intuitiva para o gerenciamento e monitoramento da produção, possibilitando a visualização de relatórios e gráficos baseados em dados de produção.
 
+https://tela-de-login-html.onrender.com
+
 ## Tecnologias Utilizadas
 
 - **Python**: Utilizado como linguagem de programação principal no backend, oferecendo a lógica necessária para o funcionamento do sistema.
@@ -23,9 +25,3 @@ Este projeto consiste em um sistema web desenvolvido para o controle de produç�
 - **Backend**: Implementado com Flask, gerencia a lógica de aplicação e a comunicação com o banco de dados.
 - **Frontend**: Desenvolvido com HTML, CSS e JavaScript, proporciona uma experiência de usuário interativa e visualmente atraente.
 - **Banco de Dados**: Utilizado para armazenar dados relacionados à produção, garantindo a integridade e a eficiência na gestão dos dados.
-
-## Como Executar
-
-1. **Clone o repositório**:
-   ```bash
-   git clone <https://github.com/Nelson-esilva/Tela-de-login-HTML.git>
